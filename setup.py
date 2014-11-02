@@ -21,7 +21,7 @@ tsyg = Extension('tsygFort',sources=['models/tsyganenko/T02.f', 'models/tsyganen
 
 #C extensions
 dmap = Extension("dmapio", sources=glob.glob('pydarn/rst/src/*.c'),)
-aacgm = Extension("aacgm", sources=glob.glob('models/aacgm/*.c'),)
+aacgm = Extension("aacgm2", sources=glob.glob('models/aacgm/*.c'),)
 
 
 ################################################################################
