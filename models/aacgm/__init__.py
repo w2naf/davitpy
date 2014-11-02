@@ -4,6 +4,6 @@
 *********************
 """
 try:
-    from aacgm import *
+    from aacgm2 import *
 except Exception, e:
     print __file__+' -> aacgm: ', e
