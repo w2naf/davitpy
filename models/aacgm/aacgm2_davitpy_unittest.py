@@ -341,7 +341,9 @@ class LegacyDavitPyAacgmMltTest(unittest.TestCase):
 
         glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
 
-        epoch = np.array([(x - datetime.datetime(1970,1,1)).total_seconds() for x in dtime])
+        epoch  = np.array([(x - datetime.datetime(1970,1,1)).total_seconds() for x in dtime])
+        mlon   = np.array(mlon)
+        height = np.array(height)
         
         mlt_test = aacgm.mltFromEpoch(epoch,mlon,height=height)
 
@@ -357,6 +359,60 @@ class LegacyDavitPyAacgmMltTest(unittest.TestCase):
         mlon = [mlon] * 10
         epoch = (dtime - datetime.datetime(1970,1,1)).total_seconds()
         mlt_test = aacgm.mltFromEpoch(epoch,mlon,height=height)
+
+        for mlt_test_0 in mlt_test:
+            self.assertAlmostEqual(mlt_test_0,mlt,self.accuracy)
+
+    # Testing mltFromYrsec() #######################################################
+    def test_mltFromYrsec_scalar(self):
+        print('Testing the scalar functionality of mltFromYrsec().')
+
+        for item in self.test_data:
+            glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = item
+            
+            year     = dtime.year
+            year_sec = (dtime - datetime.datetime(year,1,1)).total_seconds()
+            mlt_test = aacgm.mltFromYrsec(year,year_sec,mlon,height=height)
+
+            self.assertAlmostEqual(mlt_test,mlt,self.accuracy)
+
+    def test_mltFromYrsec_lists(self):
+        print('Testing the list functionality of mltFromYrsec().')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
+
+        year     = [x.year for x in dtime]
+        year_sec = [(x - datetime.datetime(x.year,1,1)).total_seconds() for x in dtime]
+        
+        mlt_test = aacgm.mltFromYrsec(year,year_sec,mlon,height=height)
+
+        for mlt_test_0, mlt_0, in zip(mlt_test,mlt):
+            self.assertAlmostEqual(mlt_test_0,mlt_0,self.accuracy)
+
+    def test_mltFromYrsec_numpy(self):
+        print('Testing the 1d numpy array functionality of mltFromYrsec().')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
+
+        year     = np.array([x.year for x in dtime])
+        year_sec = np.array([(x - datetime.datetime(x.year,1,1)).total_seconds() for x in dtime])
+        mlon     = np.array(mlon)
+        height   = np.array(height)
+        
+        mlt_test = aacgm.mltFromYrsec(year,year_sec,mlon,height=height)
+
+        for mlt_test_0, mlt_0, in zip(mlt_test,mlt):
+            self.assertAlmostEqual(mlt_test_0,mlt_0,self.accuracy)
+        
+    def test_mltFromYrsec_scalar_date_height(self):
+        print('Testing mltFromYrsec() when in_lat and in_lon are lists, but date, height, and flg are scalars.')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = self.test_data[0]
+
+        mlon     = [mlon] * 10
+        year     = dtime.year
+        year_sec = (dtime - datetime.datetime(year,1,1)).total_seconds()
+        mlt_test = aacgm.mltFromYrsec(year,year_sec,mlon,height=height)
 
         for mlt_test_0 in mlt_test:
             self.assertAlmostEqual(mlt_test_0,mlt,self.accuracy)

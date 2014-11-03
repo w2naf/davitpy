@@ -154,5 +154,18 @@ def mltFromEpoch(unix_epoch,mlon,height=350.):
     return aacgm2_convert_mlt(mlon, height, dtimes, return_mslong=False)
 
 def mltFromYrsec(year,year_sec,mlon,height=350.):
-    import ipdb; ipdb.set_trace()
-    return
+    year_arr     = np.array(year)
+    year_sec_arr = np.array(year_sec)
+
+    sizes = np.array([year_arr.size,year_sec_arr.size])
+
+    if np.unique(sizes).size != 1:
+        print('All date/time elements must be the same length.')
+        return None
+
+    if year_arr.shape     == (): year_arr.shape       = (1,)
+    if year_sec_arr.shape == (): year_sec_arr.shape   = (1,)
+
+    dt_tups = zip(year_arr, year_sec_arr)
+    dtimes = [datetime.datetime(x[0],1,1)+datetime.timedelta(seconds=x[1]) for x in dt_tups]
+    return aacgm2_convert_mlt(mlon, height, dtimes, return_mslong=False)
