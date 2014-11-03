@@ -67,6 +67,50 @@ class DavitPyAacgmTest(unittest.TestCase):
             self.assertAlmostEqual(mlat_test_0,mlat,self.accuracy)
             self.assertAlmostEqual(mlon_test_0,mlon,self.accuracy)
             self.assertAlmostEqual(r_test_0,r,self.accuracy)
-       
-       
+
+    def test_aacgm2_convert_mlt_scalar(self):
+        print('Testing the scalar functionality of aacgm2_convert_mlt.')
+
+        for item in self.test_data:
+            glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = item
+
+            mlt_test, mslong_test = aacgm.aacgm2_convert_mlt(mlon,height,dtime,return_mslong=True)
+            self.assertAlmostEqual(mlt_test,mlt,self.accuracy)
+            self.assertAlmostEqual(mslong_test,mslong,self.accuracy)
+
+    def test_aacgm2_convert_mlt_lists(self):
+        print('Testing the list functionality of aacgm2_convert_mlt.')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
+
+        mlt_test, mslong_test = aacgm.aacgm2_convert_mlt(mlon,height,dtime,return_mslong=True)
+
+        for mlt_test_0, mslong_test_0, mlt_0, mslong_0 in zip(mlt_test,mslong_test,mlt,mslong):
+            self.assertAlmostEqual(mlt_test_0,mlt_0,self.accuracy)
+            self.assertAlmostEqual(mslong_test_0,mslong_0,self.accuracy)
+
+    def test_aacgm2_convert_mlt_numpy(self):
+        print('Testing the 1d numpy array functionality of aacgm2_convert_mlt.')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
+
+        mlt_test, mslong_test = aacgm.aacgm2_convert_mlt(np.array(mlon),np.array(height),np.array(dtime),return_mslong=True)
+
+        for mlt_test_0, mslong_test_0, mlt_0, mslong_0 in zip(mlt_test,mslong_test,mlt,mslong):
+            self.assertAlmostEqual(mlt_test_0,mlt_0,self.accuracy)
+            self.assertAlmostEqual(mslong_test_0,mslong_0,self.accuracy)
+
+    def test_aacgm2_convert_mlt_scalar_date_height(self):
+        print('Testing aacgm2_convert_mlt when in_lat and in_lon are lists, but date, height, and flg are scalars.')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = self.test_data[0]
+
+        mlon = [mlon] * 10
+
+        mlt_test, mslong_test = aacgm.aacgm2_convert_mlt(mlon,height,dtime,return_mslong=True)
+
+        for mlt_test_0, mslong_test_0 in zip(mlt_test,mslong_test):
+            self.assertAlmostEqual(mlt_test_0,mlt,self.accuracy)
+            self.assertAlmostEqual(mslong_test_0,mslong,self.accuracy)
+
 unittest.main()
