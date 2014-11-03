@@ -114,6 +114,34 @@ def aacgmConv(inLat, inLon, height, year, flg=0):
     dtimes  = [datetime.datetime(yr,1,1) for yr in years]   
     return aacgm2_convert(inLat, inLon, height, dtimes, flg)
 
+def mltFromYmdhms(year,month,day,hour,minute,second,mlon,height=350.):
+    
+    year_arr    = np.array(year)
+    month_arr   = np.array(month)
+    day_arr     = np.array(day)
+    hour_arr    = np.array(hour)
+    minute_arr  = np.array(minute)
+    second_arr  = np.array(second)
+
+    sizes = np.array([year_arr.size,month_arr.size,day_arr.size,hour_arr.size,minute_arr.size, second_arr.size])
+
+    if np.unique(sizes).size != 1:
+        print('All date/time elements must be the same length.')
+        return None
+
+    if year_arr.shape   == (): year_arr.shape   = (1,)
+    if month_arr.shape  == (): month_arr.shape  = (1,)
+    if day_arr.shape    == (): day_arr.shape    = (1,)
+    if hour_arr.shape   == (): hour_arr.shape   = (1,)
+    if minute_arr.shape == (): minute_arr.shape = (1,)
+    if second_arr.shape == (): second_arr.shape = (1,)
+
+    dt_tups = zip(year_arr,month_arr,day_arr,hour_arr,minute_arr,second_arr)
+    dtimes = [datetime.datetime(*x) for x in dt_tups]
+
+    return aacgm2_convert_mlt(mlon, height, dtimes, return_mslong=False)
+    
+
 # Define aacgmConvArr for legacy compatibility.
 # aacgmConv now can handle everything aacgmConvArr could, so just
 # set them equal.
