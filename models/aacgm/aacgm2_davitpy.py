@@ -1,8 +1,55 @@
+"""
+*********************
+**Module**: aacgm2_davitpy.py
+
+This is C-based python extension module for AACGM version 2.
+Please see DOI: 10.1002/2014JA020264 for more details.
+
+This module provides a more pythonic interface to the C extensions.
+It is recommended to use aacgm2_convert() and aacgm2_convert_mlt().
+
+aacgmConv(), aacgmConvArr(), mltFromYmdhms(), mltFromEpoch(), and
+mltFromYrsec() are all wrapper functions to provide backwards-
+compatibility.
+
+AACGMv2 Coefficients are distributed with DavitPy and should be located
+in `davitpy/tables/aacgm/`.
+
+Python Wrappers/C Extension by Nathaniel A. Frissell, 3 November 2014
+*********************
+"""
+
 import aacgm2
 import datetime
 import numpy as np
 
 def aacgm2_convert(in_lat, in_lon, height, dtime, flg=0):
+    """
+    Convert between geographic and AACGMv2 (magnetic) coordinates.
+
+    **Input Arguments**
+
+    * in_lat    : latitudes [deg] to be converted from.
+    * in_lon    : longtudes [deg] to be converted from.
+    * height    : altitude [km]
+    * dtime     : datetime.datetime object of observation
+    * flg       : 0 to convert from geographic to AACGM
+                  1 to convert from AACGM to geographic
+
+    **Returns**
+    Tuple of form (lat_out, lon_out, r_out).
+
+    * lat_out   : converted latitude [deg]
+    * lon_out   : converted longitude [deg]
+    * r_out     : altitude of final measurement [in Earth Radii,
+                                                1=surface of the Earth]
+    
+    This method accepts scalars or sequences (i.e. 1d arrays).
+    If in_lat and in_lon are sequences, but other arguments are scalars,
+    the scalar arguments will be applied uniformly to all in_lat,in_lon
+    pairs.
+    """
+
     # Convert to numpy arrays to make it easy to handle both
     # scalars and lists.
     in_lats = np.array(in_lat)
@@ -62,6 +109,31 @@ def aacgm2_convert(in_lat, in_lon, height, dtime, flg=0):
     return ret_mlats,ret_mlon,ret_rs
 
 def aacgm2_convert_mlt(in_lon, height, dtime, return_mslong=False):
+    """
+    Calculate Magnetic Local Time.
+
+    **Input Arguments**
+
+    * in_lon    : longtudes [deg] to be converted from.
+    * height    : altitude [km]
+    * dtime     : datetime.datetime object of observation
+    * return_mslong: If True, also return the Mean Solar Longitude.
+                  
+
+    **Returns**
+   
+    * mlt       : Magnetic Local Time [hours]
+    * mslong    : Mean Solar Longitude [deg]
+                  This is the geomagnetic (AACGMv2) longitude of Solar
+                  Noon.  Returned as second element of a tuple if 
+                  return_mslong is True.
+
+    This method accepts scalars or sequences (i.e. 1d arrays).
+    If in_lon is a sequence, but other arguments are scalars,
+    the scalar arguments will be applied uniformly to all in_lon
+    values.
+    """
+
     # Convert to numpy arrays to make it easy to handle both
     # scalars and lists.
     in_lons = np.array(in_lon)
@@ -109,6 +181,31 @@ def aacgm2_convert_mlt(in_lon, height, dtime, return_mslong=False):
         return ret_mlts
 
 def aacgmConv(inLat, inLon, height, year, flg=0):
+    """
+    Convert between geographic and AACGMv2 (magnetic) coordinates.
+
+    **Input Arguments**
+
+    * in_lat    : latitudes [deg] to be converted from.
+    * in_lon    : longtudes [deg] to be converted from.
+    * height    : altitude [km]
+    * year      : year of observation
+    * flg       : 0 to convert from geographic to AACGM
+                  1 to convert from AACGM to geographic
+
+    **Returns**
+    Tuple of form (lat_out, lon_out, r_out).
+
+    * lat_out   : converted latitude [deg]
+    * lon_out   : converted longitude [deg]
+    * r_out     : altitude of final measurement [in Earth Radii,
+                                                1=surface of the Earth]
+    
+    This method accepts scalars or sequences (i.e. 1d arrays).
+    If in_lat and in_lon are sequences, but other arguments are scalars,
+    the scalar arguments will be applied uniformly to all in_lat,in_lon
+    pairs.
+    """
     years   = np.array(year)
     if years.shape == (): years.shape = (1,)
     dtimes  = [datetime.datetime(yr,1,1) for yr in years]   
@@ -120,6 +217,29 @@ def aacgmConv(inLat, inLon, height, year, flg=0):
 aacgmConvArr = aacgmConv
 
 def mltFromYmdhms(year,month,day,hour,minute,second,mlon,height=350.):
+    """
+    Calculate Magnetic Local Time.
+
+    **Input Arguments**
+
+    * year      : year
+    * month     : month
+    * day       : day
+    * hour      : hour
+    * minute    : minute
+    * second    : seconds
+    * mlon      : longtudes [deg] to be converted from.
+    * height    : altitude [km]
+
+    **Returns**
+
+    * mlt       : Magnetic Local Time [hours]
+
+    This method accepts scalars or sequences (i.e. 1d arrays).
+    If in_lon is a sequence, but other arguments are scalars,
+    the scalar arguments will be applied uniformly to all in_lon
+    values.
+    """
     
     year_arr    = np.array(year)
     month_arr   = np.array(month)
@@ -147,6 +267,24 @@ def mltFromYmdhms(year,month,day,hour,minute,second,mlon,height=350.):
     return aacgm2_convert_mlt(mlon, height, dtimes, return_mslong=False)
     
 def mltFromEpoch(unix_epoch,mlon,height=350.):
+    """
+    Calculate Magnetic Local Time.
+
+    **Input Arguments**
+
+    * unix_epoch: Number of seconds since January 1, 1970 0000 UT
+    * mlon      : longtudes [deg] to be converted from.
+    * height    : altitude [km]
+
+    **Returns**
+
+    * mlt       : Magnetic Local Time [hours]
+
+    This method accepts scalars or sequences (i.e. 1d arrays).
+    If in_lon is a sequence, but other arguments are scalars,
+    the scalar arguments will be applied uniformly to all in_lon
+    values.
+    """
     epoch_arr = np.array(unix_epoch)
     if epoch_arr.shape == (): epoch_arr.shape = (1,)
 
@@ -154,6 +292,25 @@ def mltFromEpoch(unix_epoch,mlon,height=350.):
     return aacgm2_convert_mlt(mlon, height, dtimes, return_mslong=False)
 
 def mltFromYrsec(year,year_sec,mlon,height=350.):
+    """
+    Calculate Magnetic Local Time.
+
+    **Input Arguments**
+
+    * year      : year
+    * year_sec  : seconds since beginning of year
+    * mlon      : longtudes [deg] to be converted from.
+    * height    : altitude [km]
+
+    **Returns**
+
+    * mlt       : Magnetic Local Time [hours]
+
+    This method accepts scalars or sequences (i.e. 1d arrays).
+    If in_lon is a sequence, but other arguments are scalars,
+    the scalar arguments will be applied uniformly to all in_lon
+    values.
+    """
     year_arr     = np.array(year)
     year_sec_arr = np.array(year_sec)
 

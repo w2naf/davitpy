@@ -1,3 +1,16 @@
+"""
+aacgm2_davitpy_unittest.py
+
+This is the test script for the AACGMv2 distribution included in
+DavitPy.  Please make sure DavitPy is properly installed before running
+this script.
+
+Run this script by executing"
+`python aacgm2_davitpy_unittest.py`
+
+AACGMv2 Test by Nathaniel A. Frissell, 3 November 2014
+"""
+
 import datetime
 from datetime import datetime as dt
 import numpy as np
