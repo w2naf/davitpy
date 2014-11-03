@@ -47,18 +47,11 @@ def aacgm2_convert(in_lat, in_lon, height, dtime, flg=0):
     if dtimes.shape  == (): dtimes.shape  = (1,)
     if flgs.shape    == (): flgs.shape    = (1,)
 
-    # Now put things into lists to iterate through C call...
-    lat_list    = in_lats.tolist()
-    lon_list    = in_lons.tolist()
-    height_list = heights.tolist()
-    dtime_list  = dtimes.tolist()
-    flg_list    = flgs.tolist()
-
     # Initialize lists for final answers and call AACGM function.
     mlats, mlons, rs = [], [], []
     current_datetime = None
 
-    for lat_0, lon_0, height_0, dt_0, flg_0 in zip(lat_list,lon_list,height_list,dtime_list,flg_list):
+    for lat_0, lon_0, height_0, dt_0, flg_0 in zip(in_lats,in_lons,heights,dtimes,flgs):
         if dt_0 != current_datetime:
             aacgm2.AACGM_v2_SetDateTime(dt_0.year,dt_0.month,dt_0.day,dt_0.hour,dt_0.minute,dt_0.second)
             current_datetime = dt_0
@@ -110,5 +103,46 @@ if __name__ == '__main__':
                 self.assertAlmostEqual(mlat_test,mlat,self.accuracy)
                 self.assertAlmostEqual(mlon_test,mlon,self.accuracy)
                 self.assertAlmostEqual(r_test,r,self.accuracy)
+
+        def test_aacgm2_convert_lists(self):
+            print('Testing the list functionality of aacgm2_convert.')
+
+            glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
+
+            mlat_test, mlon_test, r_test = aacgm2_convert(glat,glon,height,dtime,flg)
+
+            for mlat_test_0,mlon_test_0,r_test_0, mlat_0, mlon_0, r_0 \
+                    in zip(mlat_test,mlon_test,r_test,mlat,mlon,r):
+                self.assertAlmostEqual(mlat_test_0,mlat_0,self.accuracy)
+                self.assertAlmostEqual(mlon_test_0,mlon_0,self.accuracy)
+                self.assertAlmostEqual(r_test_0,r_0,self.accuracy)
+
+        def test_aacgm2_convert_numpy(self):
+            print('Testing the 1d numpy array functionality of aacgm2_convert.')
+
+            glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
+
+            mlat_test, mlon_test, r_test = aacgm2_convert(np.array(glat),np.array(glon),np.array(height),np.array(dtime),np.array(flg))
+
+            for mlat_test_0,mlon_test_0,r_test_0, mlat_0, mlon_0, r_0 \
+                    in zip(mlat_test,mlon_test,r_test,mlat,mlon,r):
+                self.assertAlmostEqual(mlat_test_0,mlat_0,self.accuracy)
+                self.assertAlmostEqual(mlon_test_0,mlon_0,self.accuracy)
+                self.assertAlmostEqual(r_test_0,r_0,self.accuracy)
+
+        def test_aacgm2_convert_scalar_date_height(self):
+            print('Testing aacgm2_convert when in_lat and in_lon are lists, but date, height, and flg are scalars.')
+
+            glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = self.test_data[0]
+
+            glat = [glat] * 10
+            glon = [glon] * 10
+
+            mlat_test, mlon_test, r_test = aacgm2_convert(glat,glon,height,dtime)
+
+            for mlat_test_0,mlon_test_0,r_test_0 in zip(mlat_test,mlon_test,r_test):
+                self.assertAlmostEqual(mlat_test_0,mlat,self.accuracy)
+                self.assertAlmostEqual(mlon_test_0,mlon,self.accuracy)
+                self.assertAlmostEqual(r_test_0,r,self.accuracy)
            
     unittest.main()
