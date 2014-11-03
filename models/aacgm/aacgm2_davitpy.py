@@ -2,11 +2,6 @@ import aacgm2
 import datetime
 import numpy as np
 
-def aacgmConv(inLat, inLon, height, year, flg):
-    years   = np.array(year).tolist()
-    dtimes  = [datetime.datetime(yr,1,1) for yr in years]   
-    return aacgm2_convert(inLat, inLon, height, year, flg)
-
 def aacgm2_convert(in_lat, in_lon, height, dtime, flg=0):
     # Convert to numpy arrays to make it easy to handle both
     # scalars and lists.
@@ -112,3 +107,14 @@ def aacgm2_convert_mlt(in_lon, height, dtime, return_mslong=False):
         return ret_mlts, ret_mslongs
     else:
         return ret_mlts
+
+def aacgmConv(inLat, inLon, height, year, flg=0):
+    years   = np.array(year)
+    if years.shape == (): years.shape = (1,)
+    dtimes  = [datetime.datetime(yr,1,1) for yr in years]   
+    return aacgm2_convert(inLat, inLon, height, dtimes, flg)
+
+# Define aacgmConvArr for legacy compatibility.
+# aacgmConv now can handle everything aacgmConvArr could, so just
+# set them equal.
+aacgmConvArr = aacgmConv

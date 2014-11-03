@@ -5,6 +5,6 @@
 """
 try:
     from aacgm2_davitpy import aacgm2_convert, aacgm2_convert_mlt
-    from aacgm2_davitpy import aacgmConv
+    from aacgm2_davitpy import aacgmConv, aacgmConvArr
 except Exception, e:
     print __file__+' -> aacgm: ', e
