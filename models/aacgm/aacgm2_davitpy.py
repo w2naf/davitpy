@@ -114,6 +114,11 @@ def aacgmConv(inLat, inLon, height, year, flg=0):
     dtimes  = [datetime.datetime(yr,1,1) for yr in years]   
     return aacgm2_convert(inLat, inLon, height, dtimes, flg)
 
+# Define aacgmConvArr for legacy compatibility.
+# aacgmConv now can handle everything aacgmConvArr could, so just
+# set them equal.
+aacgmConvArr = aacgmConv
+
 def mltFromYmdhms(year,month,day,hour,minute,second,mlon,height=350.):
     
     year_arr    = np.array(year)
@@ -141,8 +146,13 @@ def mltFromYmdhms(year,month,day,hour,minute,second,mlon,height=350.):
 
     return aacgm2_convert_mlt(mlon, height, dtimes, return_mslong=False)
     
+def mltFromEpoch(unix_epoch,mlon,height=350.):
+    epoch_arr = np.array(unix_epoch)
+    if epoch_arr.shape == (): epoch_arr.shape = (1,)
 
-# Define aacgmConvArr for legacy compatibility.
-# aacgmConv now can handle everything aacgmConvArr could, so just
-# set them equal.
-aacgmConvArr = aacgmConv
+    dtimes = [datetime.datetime.utcfromtimestamp(x) for x in epoch_arr]
+    return aacgm2_convert_mlt(mlon, height, dtimes, return_mslong=False)
+
+def mltFromYrsec(year,year_sec,mlon,height=350.):
+    import ipdb; ipdb.set_trace()
+    return

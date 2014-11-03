@@ -1,3 +1,4 @@
+import datetime
 from datetime import datetime as dt
 import numpy as np
 import unittest
@@ -308,6 +309,54 @@ class LegacyDavitPyAacgmMltTest(unittest.TestCase):
         mlon = [mlon] * 10
 
         mlt_test = aacgm.mltFromYmdhms(dtime.year,dtime.month,dtime.day,dtime.hour,dtime.minute,dtime.second,mlon,height=height)
+
+        for mlt_test_0 in mlt_test:
+            self.assertAlmostEqual(mlt_test_0,mlt,self.accuracy)
+
+    # Testing mltFromEpoch() #######################################################
+    def test_mltFromEpoch_scalar(self):
+        print('Testing the scalar functionality of mltFromEpoch().')
+
+        for item in self.test_data:
+            glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = item
+            
+            epoch = (dtime - datetime.datetime(1970,1,1)).total_seconds()
+            mlt_test = aacgm.mltFromEpoch(epoch,mlon,height=height)
+            self.assertAlmostEqual(mlt_test,mlt,self.accuracy)
+
+    def test_mltFromEpoch_lists(self):
+        print('Testing the list functionality of mltFromEpoch().')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
+
+        epoch = [(x - datetime.datetime(1970,1,1)).total_seconds() for x in dtime]
+        
+        mlt_test = aacgm.mltFromEpoch(epoch,mlon,height=height)
+
+        for mlt_test_0, mlt_0, in zip(mlt_test,mlt):
+            self.assertAlmostEqual(mlt_test_0,mlt_0,self.accuracy)
+
+    def test_mltFromEpoch_numpy(self):
+        print('Testing the 1d numpy array functionality of mltFromEpoch().')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = zip(*self.test_data)
+
+        epoch = np.array([(x - datetime.datetime(1970,1,1)).total_seconds() for x in dtime])
+        
+        mlt_test = aacgm.mltFromEpoch(epoch,mlon,height=height)
+
+        for mlt_test_0, mlt_0, in zip(mlt_test,mlt):
+            self.assertAlmostEqual(mlt_test_0,mlt_0,self.accuracy)
+        
+
+    def test_mltFromEpoch_scalar_date_height(self):
+        print('Testing mltFromEpoch() when in_lat and in_lon are lists, but date, height, and flg are scalars.')
+
+        glat,glon,height,dtime,flg,mlat,mlon,r,mlt,mslong = self.test_data[0]
+
+        mlon = [mlon] * 10
+        epoch = (dtime - datetime.datetime(1970,1,1)).total_seconds()
+        mlt_test = aacgm.mltFromEpoch(epoch,mlon,height=height)
 
         for mlt_test_0 in mlt_test:
             self.assertAlmostEqual(mlt_test_0,mlt,self.accuracy)
