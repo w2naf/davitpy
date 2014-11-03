@@ -9,7 +9,7 @@ export DAVITPY="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export PATH=${DAVITPY}/bin:${PATH}
 
-export AACGM_DAVITPY_DAT_PREFIX=${DAVITPY}/tables/aacgm/aacgm_coeffs
+export AACGM_v2_DAT_PREFIX=${DAVITPY}/tables/aacgm/aacgm_coeffs-11-
 
 #
 # IN LIEU OF CONFIGURATION FILE LIKE MATPLOTLIBRC
