@@ -13,6 +13,9 @@ REQ_FLAGS = -w -g
 # Declare non-local directories that contain source files
 IRIDIR = $(DAVITPY)/models/iri
 
+# Installation Dir
+INSTALL_DIR = /usr/lib64/python2.7/site-packages/davitpy-0.2-py2.7-linux-x86_64.egg/models/raydarn
+
 # Declare source, object, and executable files
 RTSRC = constants.f90 \
 	MPIutils.f90
@@ -49,3 +52,6 @@ $(EXEC):
 clean:
 	find . -name "*~" -o -name "*.o" -o -name "*.mod" | xargs rm -f $(EXEC)
 	rm -f $(EXEC) $(IRIOBJS)
+
+install:
+	cp $(EXEC) rt.py constants.mod mpiutils.mod __init__.py $(INSTALL_DIR)
