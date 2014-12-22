@@ -176,7 +176,7 @@ program     rayDARN
             elev = elev_0
             do iel=1,nelev
                 if (elev.gt.params%elevend) exit
-!                print*, rank, 'elev',hour,azim,elev
+                print*, rank, 'elev',hour,azim,elev
                     CALL TRACE_RKCK(params, hour, azim, elev, edensARR, edensTHT, dip, hfrays, hfranges, hfionos, &
                                 mpi_size_int, mpi_size_real)
 
@@ -1025,7 +1025,7 @@ SUBROUTINE IRI_INTERP(tht, alti, edensTHT, edensARR, edens)
         endif
     enddo
     if (tht.gt.edensTHT(500)) then
-        thtind = 500
+        thtind = 499
     endif
 
 

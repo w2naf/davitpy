@@ -1,12 +1,13 @@
 # Makefile for building RayDARN
 
 # Declare default compilers
-LOCAL_FC = mpif90
+LOCAL_FC = mpifort
 # Use default compilers unless specified by command line input
 FC = $(LOCAL_FC)
 
 # Declare optional and required compilation flags
 OPT_FLAGS = -O2 -fbacktrace -fno-automatic
+#OPT_FLAGS = -Og -Wall -fbounds-check -fbacktrace -fno-automatic
 REQ_FLAGS = -w -g
 
 # Declare non-local directories that contain source files

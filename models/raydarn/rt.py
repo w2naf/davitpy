@@ -190,7 +190,7 @@ class RtRun(object):
         if (exitCode != 0):
             raise Exception('Fortran execution error.')
         else:
-            subp.call(['rm',inputFileName])
+#            subp.call(['rm',inputFileName])
             return True
 
 
