@@ -176,7 +176,7 @@ program     rayDARN
             elev = elev_0
             do iel=1,nelev
                 if (elev.gt.params%elevend) exit
-                print*, rank, 'elev',hour,azim,elev
+!                print*, rank, 'elev',hour,azim,elev
                     CALL TRACE_RKCK(params, hour, azim, elev, edensARR, edensTHT, dip, hfrays, hfranges, hfionos, &
                                 mpi_size_int, mpi_size_real)
 
@@ -916,7 +916,12 @@ SUBROUTINE IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
     real*4,dimension(20,1000):: outf
     real*4,dimension(500)::     dayNe
 
+    real*4,dimension(500)::     wave
+    real*4::    edensARR_0(500,500)
+    integer::   i
+    real*4::    xpos(500) = (/(i, i=0,2495, 5)/)
 
+    print *,xpos(1)
 
 ! Initialize position
     vbeg = 60.
@@ -983,11 +988,19 @@ SUBROUTINE IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
                    vbeg,vend,vstp,outf,oar)
         ! Altitude loop (pass output of IRI_SUB to the proper matrix)
         do j=1,500
-            edensARR(j,n) = outf(1,j)
+            edensARR(j,n) = outf(1,j) 
         enddo
         dip(n,1) = oar(25)
         dip(n,2) = oar(27)
     ENDDO
+
+!    wave = .20*cos((2*PI/250.)*xpos)
+
+    do n=1,500
+!        edensARR_0(n,:) = edensARR(n,:) * (1+wave)
+        edensARR_0(n,:) = edensARR(n,:)
+    enddo 
+    edensARR = edensARR_0
 
 END SUBROUTINE IRI_ARR
 
