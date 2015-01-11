@@ -916,13 +916,6 @@ SUBROUTINE IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
     real*4,dimension(20,1000):: outf
     real*4,dimension(500)::     dayNe
 
-    real*4,dimension(500)::     wave
-    real*4::    edensARR_0(500,500)
-    integer::   i
-    real*4::    xpos(500) = (/(i, i=0,2495, 5)/)
-
-    print *,xpos(1)
-
 ! Initialize position
     vbeg = 60.
     vend = 560.
@@ -978,8 +971,12 @@ SUBROUTINE IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
 ! Lat/lon loop
     do n=2,500
         ! Calculates new position after one step
-        call CALC_POS(edensPOS(n-1,1), edensPOS(n-1,2), 0., azim, 5., 0., &
+!        call CALC_POS(edensPOS(n-1,1), edensPOS(n-1,2), 0., azim, 5., 0., &
+!                edensPOS(n,1), edensPOS(n,2))
+
+        call CALC_POS(edensPOS(1,1), edensPOS(1,2), 0., azim, (5.*(n-1)), 0., &
                 edensPOS(n,1), edensPOS(n,2))
+
         edensTHT(n) = acos( cos(edensPOS(1,1)*PI/180.)*cos(edensPOS(n,1)*PI/180.)* &
                             cos((edensPOS(n,2) - edensPOS(1,2))*PI/180.) &
                     + sin(edensPOS(1,1)*PI/180.)*sin(edensPOS(n,1)*PI/180.))
@@ -993,14 +990,6 @@ SUBROUTINE IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
         dip(n,1) = oar(25)
         dip(n,2) = oar(27)
     ENDDO
-
-!    wave = .20*cos((2*PI/250.)*xpos)
-
-    do n=1,500
-!        edensARR_0(n,:) = edensARR(n,:) * (1+wave)
-        edensARR_0(n,:) = edensARR(n,:)
-    enddo 
-    edensARR = edensARR_0
 
 END SUBROUTINE IRI_ARR
 
