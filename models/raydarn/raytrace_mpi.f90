@@ -65,6 +65,7 @@ program     rayDARN
     CALL MPI_TYPE_SIZE(type_vec, mpi_size_vec, code)
 
     ! Read parameters
+    params%edens_file = "NONE"
     if (rank.eq.0) then 
         CALL READ_INP(params)
         print*, params
@@ -167,20 +168,21 @@ program     rayDARN
 !            print*, rank, 'azim',hour,azim
             ! Generate electron density background
 
-
-!            CALL IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
-!            open(unit=9,file='/home/w2naf/code/raytrace/edens_fort.txt')
-!            do i=1,nrows
-!                write(9,*) edensARR(i,:)
-!            end do
-!            close(9)
-
-            CALL LOAD_BEAM_PROFILE(edensARR, edensPOS, edensTHT, dip)
-!            open(unit=9,file='/home/w2naf/code/raytrace/edens_fort_py.txt')
-!            do i=1,nrows
-!                write(9,*) edensARR(i,:)
-!            end do
-!            close(9)
+            if (trim(params%edens_file).eq."NONE") then
+                CALL IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
+!                open(unit=9,file='/home/w2naf/code/raytrace/edens_fort.txt')
+!                do i=1,nrows
+!                    write(9,*) edensARR(i,:)
+!                end do
+!                close(9)
+            else
+                CALL LOAD_BEAM_PROFILE(params, edensARR, edensPOS, edensTHT, dip)
+!                open(unit=9,file='/home/w2naf/code/raytrace/edens_fort_py.txt')
+!                do i=1,nrows
+!                    write(9,*) edensARR(i,:)
+!                end do
+!                close(9)
+            end if
 
 
             CALL MPI_FILE_WRITE_SHARED(hfedens, (/hour, azim, &
@@ -322,6 +324,7 @@ SUBROUTINE READ_INP(params)
     implicit none
     type(prm),intent(out)::             params
     character(len=80)::                 filename
+    character*250:: edens_file
 
     CALL getarg(1, filename)
     CALL getarg(2, params%outdir)
@@ -352,10 +355,13 @@ SUBROUTINE READ_INP(params)
     read(10, 100) params%hourstp
     read(10, 100) params%hmf2
     read(10, 100) params%nmf2
-100     format(F8.2)
-101     format(I8)
+    read(10, 102,end=200) params%edens_file
 
-    close(10)
+ 100  format(F8.2)
+ 101  format(I8)
+ 102  format(A250)
+
+ 200  close(10)
 
 END SUBROUTINE READ_INP
 
@@ -916,10 +922,12 @@ END SUBROUTINE CALC_ASPECT
 !   - from 60 to 560 km in 1km steps
 !   - over 2500km surface distance in 5km steps
 ! *************************************************************************
-SUBROUTINE LOAD_BEAM_PROFILE(edensARR, edensPOS, edensTHT, dip)
+SUBROUTINE LOAD_BEAM_PROFILE(params,edensARR, edensPOS, edensTHT, dip)
+    use constants
     use MPI
-
     implicit none
+    type(prm),intent(in)::                      params
+
     integer i,j,stat
     integer nrows
     parameter (nrows=500)
@@ -929,7 +937,7 @@ SUBROUTINE LOAD_BEAM_PROFILE(edensARR, edensPOS, edensTHT, dip)
     real*4,dimension(500,2),intent(out)::       edensPOS, dip
     real*4,dimension(500),intent(out)::         edensTHT
 
-    open(unit=73,file='/home/w2naf/code/raytrace/20141101_1200UT_bks_07.dat',form='unformatted',recl=4*nrows,access='direct')
+    open(unit=73,file=trim(params%edens_file),form='unformatted',recl=4*nrows,access='direct')
     do i=1,500
     read(unit=73,iostat=stat,iomsg=msg,rec=i) (edensARR(i,j), j=1,nrows)
     end do
@@ -945,120 +953,105 @@ SUBROUTINE LOAD_BEAM_PROFILE(edensARR, edensPOS, edensTHT, dip)
 
 END SUBROUTINE LOAD_BEAM_PROFILE
 
-!SUBROUTINE IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
-!
-!    use constants
-!    use MPI
-!    implicit none
-!    real*4,intent(in)::                         azim, hour
-!    type(prm),intent(in)::                      params
-!    real*4,dimension(500,500),intent(out)::     edensARR
-!    real*4,dimension(500,2),intent(out)::       edensPOS, dip
-!    real*4,dimension(500),intent(out)::         edensTHT
-!
-!    real*4::                    old_hour, vbeg, vend, vstp
-!    real*4::                    lonDeg, latDeg, thtmp
-!    integer::                   n, j
-!    logical::                   jf(50)
-!    real*4,dimension(100)::     oar
-!    real*4,dimension(20,1000):: outf
-!    real*4,dimension(500)::     dayNe
-!
-!    integer i,stat
-!    integer nrows
-!    parameter (nrows=500)
-!    character(100):: msg
-!
-!! Initialize position
-!    vbeg = 60.
-!    vend = 560.
-!    vstp = (vend-vbeg)/500.
-!
-!    ! adjust to have latitude between -90 and 90
-!    edensPOS(1,1) = params%txlat
-!    IF(edensPOS(1,1).gt.90.OR.edensPOS(1,1).lt.-90)THEN
-!        edensPOS(1,1) = sign(modulo(-abs(edensPOS(1,1)), 90.), edensPOS(1,1))
-!    ENDIF
-!    ! adjust to have tongitude between 0 and 360E
-!    edensPOS(1,2) = params%txlon
-!    IF(edensPOS(1,2).lt.0)THEN
-!        edensPOS(1,2) = modulo(edensPOS(1,2), 360.)
-!    ENDIF
-!    edensTHT(1) = 0.
-!
-!! Initialize call for IRI
-!    do n=1,50
-!       jf(n) = .true.
-!    enddo
-!    if (params%hmf2.gt.0.) then
-!        jf(9) = .false.
-!        oar(2) = params%hmf2
-!    endif
-!    if (params%nmf2.gt.0.) then
-!        jf(8) = .false.
-!        oar(1) = 10.**(params%nmf2)
-!    endif
-!    jf(2) = .false.               ! no temperatures
-!    jf(3) = .false.               ! no ion composition
-!    jf(5) = .false.               ! URSI foF2 model
-!    jf(6) = .false.               ! Newest ion composition model
-!    jf(21) = .false.              ! ion drift not computed
-!    jf(23) = .false.              ! Te topside (TBT 2011)
-!    jf(26) = .false.              ! no fof2 storm updating
-!    jf(29) = .false.              ! New Topside options
-!    jf(30) = .false.              ! NeQuick topside
-!    jf(33) = .false.               ! Do not calcultae auroral boundary
-!    jf(34) = .false.              ! Messages off
-!    jf(35) = .false.              ! no foE storm updating
-!
-!! Calling IRI subroutine
-!    call IRI_SUB(jf,0,edensPOS(1,1),edensPOS(1,2),params%year,params%mmdd,hour, &
-!               vbeg,vend,vstp,outf,oar)
-!
-!    do j=1,500
-!        edensARR(j,1) = outf(1,j)
-!    enddo
-!    dip(1,1) = oar(25)
-!    dip(1,2) = oar(27)
-!
-!! Lat/lon loop
-!    do n=2,500
-!        ! Calculates new position after one step
-!!        call CALC_POS(edensPOS(n-1,1), edensPOS(n-1,2), 0., azim, 5., 0., &
-!!                edensPOS(n,1), edensPOS(n,2))
-!
-!        call CALC_POS(edensPOS(1,1), edensPOS(1,2), 0., azim, (5.*(n-1)), 0., &
+SUBROUTINE IRI_ARR(params, hour, azim, edensARR, edensPOS, edensTHT, dip)
+
+    use constants
+    use MPI
+    implicit none
+    real*4,intent(in)::                         azim, hour
+    type(prm),intent(in)::                      params
+    real*4,dimension(500,500),intent(out)::     edensARR
+    real*4,dimension(500,2),intent(out)::       edensPOS, dip
+    real*4,dimension(500),intent(out)::         edensTHT
+
+    real*4::                    old_hour, vbeg, vend, vstp
+    real*4::                    lonDeg, latDeg, thtmp
+    integer::                   n, j
+    logical::                   jf(50)
+    real*4,dimension(100)::     oar
+    real*4,dimension(20,1000):: outf
+    real*4,dimension(500)::     dayNe
+
+    integer i,stat
+    integer nrows
+    parameter (nrows=500)
+    character(100):: msg
+
+! Initialize position
+    vbeg = 60.
+    vend = 560.
+    vstp = (vend-vbeg)/500.
+
+    ! adjust to have latitude between -90 and 90
+    edensPOS(1,1) = params%txlat
+    IF(edensPOS(1,1).gt.90.OR.edensPOS(1,1).lt.-90)THEN
+        edensPOS(1,1) = sign(modulo(-abs(edensPOS(1,1)), 90.), edensPOS(1,1))
+    ENDIF
+    ! adjust to have tongitude between 0 and 360E
+    edensPOS(1,2) = params%txlon
+    IF(edensPOS(1,2).lt.0)THEN
+        edensPOS(1,2) = modulo(edensPOS(1,2), 360.)
+    ENDIF
+    edensTHT(1) = 0.
+
+! Initialize call for IRI
+    do n=1,50
+       jf(n) = .true.
+    enddo
+    if (params%hmf2.gt.0.) then
+        jf(9) = .false.
+        oar(2) = params%hmf2
+    endif
+    if (params%nmf2.gt.0.) then
+        jf(8) = .false.
+        oar(1) = 10.**(params%nmf2)
+    endif
+    jf(2) = .false.               ! no temperatures
+    jf(3) = .false.               ! no ion composition
+    jf(5) = .false.               ! URSI foF2 model
+    jf(6) = .false.               ! Newest ion composition model
+    jf(21) = .false.              ! ion drift not computed
+    jf(23) = .false.              ! Te topside (TBT 2011)
+    jf(26) = .false.              ! no fof2 storm updating
+    jf(29) = .false.              ! New Topside options
+    jf(30) = .false.              ! NeQuick topside
+    jf(33) = .false.               ! Do not calcultae auroral boundary
+    jf(34) = .false.              ! Messages off
+    jf(35) = .false.              ! no foE storm updating
+
+! Calling IRI subroutine
+    call IRI_SUB(jf,0,edensPOS(1,1),edensPOS(1,2),params%year,params%mmdd,hour, &
+               vbeg,vend,vstp,outf,oar)
+
+    do j=1,500
+        edensARR(j,1) = outf(1,j)
+    enddo
+    dip(1,1) = oar(25)
+    dip(1,2) = oar(27)
+
+! Lat/lon loop
+    do n=2,500
+        ! Calculates new position after one step
+!        call CALC_POS(edensPOS(n-1,1), edensPOS(n-1,2), 0., azim, 5., 0., &
 !                edensPOS(n,1), edensPOS(n,2))
-!
-!        edensTHT(n) = acos( cos(edensPOS(1,1)*PI/180.)*cos(edensPOS(n,1)*PI/180.)* &
-!                            cos((edensPOS(n,2) - edensPOS(1,2))*PI/180.) &
-!                    + sin(edensPOS(1,1)*PI/180.)*sin(edensPOS(n,1)*PI/180.))
-!        ! Calculates electron density and magnetic dip and dec at current position and time
-!        call IRI_SUB(jf,0,edensPOS(n,1),edensPOS(n,2),params%year,params%mmdd,hour, &
-!                   vbeg,vend,vstp,outf,oar)
-!        ! Altitude loop (pass output of IRI_SUB to the proper matrix)
-!        do j=1,500
-!            edensARR(j,n) = outf(1,j) 
-!        enddo
-!        dip(n,1) = oar(25)
-!        dip(n,2) = oar(27)
-!    ENDDO
-!
-!    open(unit=73,file='/home/w2naf/code/raytrace/20141101_1200UT_bks_07.dat',form='unformatted',recl=4*nrows,access='direct')
-!!    do i=1,500
-!!        read(unit=73,iostat=stat,iomsg=msg,rec=i) (edensARR(i,j), j=1,nrows)
-!!    end do
-!
-!    read(unit=73,rec=501) (edensPOS(j,1), j=1,nrows)
-!    read(unit=73,rec=502) (edensPOS(j,2), j=1,nrows)
-!
-!    read(unit=73,rec=503) (dip(j,1), j=1,nrows)
-!    read(unit=73,rec=504) (dip(j,2), j=1,nrows)
-!
-!    read(unit=73,rec=505) (edensTHT(j), j=1,nrows)
-!    close(73)
-!
-!END SUBROUTINE IRI_ARR
+
+        call CALC_POS(edensPOS(1,1), edensPOS(1,2), 0., azim, (5.*(n-1)), 0., &
+                edensPOS(n,1), edensPOS(n,2))
+
+        edensTHT(n) = acos( cos(edensPOS(1,1)*PI/180.)*cos(edensPOS(n,1)*PI/180.)* &
+                            cos((edensPOS(n,2) - edensPOS(1,2))*PI/180.) &
+                    + sin(edensPOS(1,1)*PI/180.)*sin(edensPOS(n,1)*PI/180.))
+        ! Calculates electron density and magnetic dip and dec at current position and time
+        call IRI_SUB(jf,0,edensPOS(n,1),edensPOS(n,2),params%year,params%mmdd,hour, &
+                   vbeg,vend,vstp,outf,oar)
+        ! Altitude loop (pass output of IRI_SUB to the proper matrix)
+        do j=1,500
+            edensARR(j,n) = outf(1,j) 
+        enddo
+        dip(n,1) = oar(25)
+        dip(n,2) = oar(27)
+    ENDDO
+END SUBROUTINE IRI_ARR
 
 
 ! *************************************************************************

@@ -67,7 +67,7 @@ class RtRun(object):
         debug=False, 
         fext=None, 
         loadFrom=None, 
-        edens=None,
+        edens_file=None,
         nprocs=4):
         import datetime as dt
         from os import path
@@ -127,6 +127,10 @@ class RtRun(object):
             self.outDir = path.join( outDir, '' )
             self.fExt = '0' if not fext else fext
 
+            # Set user-supplied electron density profile
+            if edens_file is not None:
+                self.edens_file = edens_file
+
             # Write input file
             inputFile = self._genInput()
             
@@ -163,6 +167,9 @@ class RtRun(object):
             f.write( "{:8.2f}  hour (step)\n".format( self.dTime ) )
             f.write( "{:8.2f}  hmf2 (km, if 0 then ignored)\n".format( self.hmf2 ) )
             f.write( "{:8.2f}  nmf2 (log10, if 0 then ignored)\n".format( self.nmf2 ) )
+
+            if hasattr(self,'edens_file'):  # Path to user-defined electron profile
+                f.write( self.edens_file )
 
         return fname
         
