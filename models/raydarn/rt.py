@@ -67,6 +67,7 @@ class RtRun(object):
         debug=False, 
         fext=None, 
         loadFrom=None, 
+        edens=None,
         nprocs=4):
         import datetime as dt
         from os import path
@@ -217,7 +218,7 @@ class RtRun(object):
             site=self.site, radar=self.radar,
             saveToAscii=saveToAscii, debug=debug)
         # Remove Input file
-        subp.call(['rm',fName])
+#        subp.call(['rm',fName])
 
 
     def readEdens(self, debug=False):
@@ -243,7 +244,7 @@ class RtRun(object):
             site=self.site, radar=self.radar,
             debug=debug)
         # Remove Input file
-        subp.call(['rm',fName])
+#        subp.call(['rm',fName])
 
 
     def readScatter(self, debug=False):
@@ -313,7 +314,7 @@ class RtRun(object):
         files = ['rays', 'edens', 'gscat', 'iscat']
         for f in files:
             fName = path.join(self.outDir, '{}.{}.dat'.format(f, self.fExt))
-            subp.call(['rm', fName])
+#            subp.call(['rm', fName])
 
 
 #########################################################################
