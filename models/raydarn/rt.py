@@ -1,5 +1,8 @@
 # Copyright (C) 2012  VT SuperDARN Lab
 # Full license can be found in LICENSE.txt
+import numpy as np
+import pandas as pd
+
 """
 *********************
 **Module**: models.raydarn.rt
@@ -526,6 +529,9 @@ class Scatter(object):
             if debug:
                 print self.readGSFrom+' header: '
             self.header = _readHeader(f, debug=debug)
+
+            scatter_list = []
+
             # Then read ray data, one ray at a time
             while True:
                 bytes = f.read(3*4)
@@ -560,6 +566,20 @@ class Scatter(object):
                 self.gsc[rtime][raz][rel]['lat'] = np.append( self.gsc[rtime][raz][rel]['lat'], lat )
                 self.gsc[rtime][raz][rel]['lon'] = np.append( self.gsc[rtime][raz][rel]['lon'], lon )
 
+                # Same thing, but let's prepare for a Pandas DataFrame...
+                tmp = {}
+                tmp['type']     = 'gs'
+                tmp['rtime']    = rtime
+                tmp['raz']      = raz
+                tmp['rel']      = rel
+                tmp['r']        = rr
+                tmp['th']       = tht
+                tmp['gran']     = gran
+                tmp['lat']      = lat
+                tmp['lon']      = lon
+                scatter_list.append(tmp)
+
+        self.gsc_df = pd.DataFrame(scatter_list)
 
     def readIS(self, site=None, debug=False):
         """Read iscat.dat fortran output
@@ -728,7 +748,26 @@ class Scatter(object):
 
         ax.beam = beam
         return ax, aax, cbax
+
+    def gate_scatter(self,beam,fov):
+        #Add a 0 at the beginning to get the range gate numbering right.
+#        beam_inx    = np.where(beam == fov.beams)[0][0]
+#        ranges      = [0]+fov.slantRFull[beam_inx,:].tolist() 
+
+        # Some useful parameters
+        ngates          = fov.gates.size
+        range_gate      = 180 + 45*np.arange(ngates+1,dtype=np.int)
+        Re              = 6370.
+        P               = np.array(range_gate,dtype=np.float)
+        minpower        = 4. 
+
+        weights         = 1/(self.gsc_df.gran**3)
+        lag_power, bins = np.histogram(self.gsc_df.gran/1000.,bins=range_gate,weights=weights)
         
+        self.pwr        = lag_power
+        self.gates      = fov.gates
+
+        return lag_power 
 
 #########################################################################
 # Rays
