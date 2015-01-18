@@ -89,7 +89,7 @@ class RtRun(object):
 
             # Set azimuth
             self.site = self.radar.getSiteByDate(sTime)
-            if beam and not azim: 
+            if (beam is not None) and not azim: 
                 az = self.site.beamToAzim(beam)
                 azim = (az, az, 1)
             else:
