@@ -437,6 +437,7 @@ class Edens(object):
                 
         written by Sebastien, 2013-04
         """
+        import datetime as dt
         from utils import plotUtils
         from matplotlib.collections import LineCollection
         import matplotlib.pyplot as plt
@@ -455,6 +456,14 @@ class Edens(object):
                 beam = ax.beam
 
         # make sure that the required time and beam are present
+
+        # Allow a 60 second difference between the requested time and the time
+        # available.
+        keys    = np.array(self.edens.keys())
+        diffs   = np.abs(keys-time)
+        if diffs.min() < dt.timedelta(minutes=1):
+            time = keys[diffs.argmin()]
+
         assert (time in self.edens.keys()), 'Unkown time %s' % time
         if beam:
             assert (beam in self.edens[time].keys()), 'Unkown beam %s' % beam
@@ -925,6 +934,7 @@ class Rays(object):
                 
         written by Sebastien, 2013-04
         """
+        import datetime as dt
         from utils import plotUtils
         from matplotlib.collections import LineCollection
         import matplotlib.pyplot as plt
@@ -944,6 +954,13 @@ class Rays(object):
                 beam = ax.beam
 
         # make sure that the required time and beam are present
+        # Allow a 60 second difference between the requested time and the time
+        # available.
+        keys    = np.array(self.paths.keys())
+        diffs   = np.abs(keys-time)
+        if diffs.min() < dt.timedelta(minutes=1):
+            time = keys[diffs.argmin()]
+
         assert (time in self.paths.keys()), 'Unkown time %s' % time
         if beam:
             assert (beam in self.paths[time].keys()), 'Unkown beam %s' % beam
