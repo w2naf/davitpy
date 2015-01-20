@@ -28,3 +28,6 @@ radars.sqlite
 *.so
 rtFort
 docs/notebook/.ipynb_checkpoints
+dist/
+davitpy.egg-info/
+build/
