@@ -219,8 +219,10 @@ class fov(object):
 
                 if model == 'GS':
                   if (~isParamArray and ib == 0) or isParamArray:
-                    slantRangeCenter[ib,ig] = gsMapSlantRange(sRangCenter[ig],altitude=None,elevation=None)
-                    slantRangeFull[ib,ig]   = gsMapSlantRange(sRangEdge[ig],altitude=None,elevation=None)
+#                    slantRangeCenter[ib,ig] = gsMapSlantRange(sRangCenter[ig],altitude=None,elevation=None)
+#                    slantRangeFull[ib,ig]   = gsMapSlantRange(sRangEdge[ig],altitude=None,elevation=None)
+                    slantRangeCenter[ib,ig] = 0.6 * sRangCenter[ig]
+                    slantRangeFull[ib,ig]   = 0.6 * sRangEdge[ig]
                     sRangCenter[ig]         = slantRangeCenter[ib,ig]
                     sRangEdge[ig]           = slantRangeFull[ib,ig] 
 
