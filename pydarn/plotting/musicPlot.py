@@ -364,6 +364,7 @@ class musicFan(object):
         if plotTerminator:
             m.nightshade(currentData.time[timeInx])
 
+        self.pcoll  = pcoll
         self.map_obj = m
 
 class musicRTI(object):
@@ -1860,7 +1861,7 @@ def plotKarrDetected(dataObj,dataSet='active',fig=None,maxSignals=None,roiPlot=T
 
 def plotKarrAxis(dataObj,dataSet='active',axis=None,maxSignals=None, sig_fontsize=24,x_labelpad=None,y_labelpad=None,
             cbar_ticks=None, cbar_shrink=1.0, cbar_fraction=0.15,
-            cbar_gstext_offset=-0.075, cbar_gstext_fontsize=None,cbar_pad=0.05):
+            cbar_gstext_offset=-0.075, cbar_gstext_fontsize=None,cbar_pad=0.05,plot_colorbar=True):
     """Plot the horizontal wave number array for a pydarn.proc.music.musicArray object.  The kArr must have aready
     been calculated for the chosen data set using pydarn.proc.music.calculateKarr().
 
@@ -1932,15 +1933,16 @@ def plotKarrAxis(dataObj,dataSet='active',axis=None,maxSignals=None, sig_fontsiz
     axis.axhline(color='0.82',lw=2,zorder=150)
 
     #Colorbar
-    cbar = fig.colorbar(pcoll,orientation='vertical',shrink=cbar_shrink,fraction=cbar_fraction,pad=cbar_pad)
-    cbar.set_label('Normalized Wavenumber Power')
-    if not cbar_ticks:
-        cbar_ticks = np.arange(10)/10.
-    cbar.set_ticks(cbar_ticks)
+    if plot_colorbar:
+        cbar = fig.colorbar(pcoll,orientation='vertical',shrink=cbar_shrink,fraction=cbar_fraction,pad=cbar_pad)
+        cbar.set_label('Normalized Wavenumber Power')
+        if not cbar_ticks:
+            cbar_ticks = np.arange(10)/10.
+        cbar.set_ticks(cbar_ticks)
 
-    if currentData.metadata.has_key('gscat'):
-        if currentData.metadata['gscat'] == 1:
-            cbar.ax.text(0.5,cbar_gstext_offset,'Ground\nscat\nonly',ha='center',fontsize=cbar_gstext_fontsize)
+        if currentData.metadata.has_key('gscat'):
+            if currentData.metadata['gscat'] == 1:
+                cbar.ax.text(0.5,cbar_gstext_offset,'Ground\nscat\nonly',ha='center',fontsize=cbar_gstext_fontsize)
 
 #    cbar = fig.colorbar(pcoll,orientation='vertical')#,shrink=.65,fraction=.1)
 #    cbar.set_label('ABS(Spectral Density)')
