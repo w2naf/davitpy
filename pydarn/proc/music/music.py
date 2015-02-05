@@ -1573,7 +1573,6 @@ def calculateKarr(dataObj,dataSet='active',kxMax=0.05,kyMax=0.05,dkx=0.001,dky=0
     xm      = currentData.llLookupTable[4,:] #x is in the E-W direction.
     ym      = currentData.llLookupTable[3,:] #y is in the N-S direction.
 
-    threshold   = 0.15
     maxEval     = np.max(np.abs(eVals))
 
     minEvalsInx = np.where(eVals <= threshold*maxEval)[0]
