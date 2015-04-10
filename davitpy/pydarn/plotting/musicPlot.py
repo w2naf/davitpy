@@ -377,6 +377,8 @@ class musicRTI(object):
         * [**ylim**] (None or 2-element iterable of floats): Limits for y-axis.
         * [**axis**] (None or matplotlib.figure.axis): Matplotlib axis on which to plot.  If None, a new figure and axis will be created.
         * [**scale**] (None or 2-Element iterable): Colorbar scale.  If None, the default scale for the current SuperDARN parameter will be used.
+        * [**plotZeros**] (bool): If True, plot data cells that are identically zero.
+        * [**max_sounding_time**] (None or datetime.timedelta): Do not allow data to be plotted for longer than this duration.
         * [**xBoundaryLimits**] (None or 2-element iterable of datetime.datetime): Mark a region of times on the RTI plot.  A green dashed vertical line will be plotted
             at each of the boundary times.  The region of time outside of the boundary will be shaded gray.
             If set to None, this will automatically be set to the timeLimits set in the metadata, if they exist.
@@ -386,6 +388,7 @@ class musicRTI(object):
         * [**yticks**] (list): Where to put the ticks on the y-axis.
         * [**ytick_lat_format**] (str):  %-style string format code for latitude y-tick labels
         * [**autoScale**] (bool):  If True, automatically scale the color bar for good data visualization. Keyword scale must be None when using autoScale.
+        ax.set_xlim(xlim)
         * [**plotTerminator**] (bool): If True, overlay day/night terminator on the RTI plot.  Every cell is evaluated for day/night and shaded accordingly.  Therefore,
             terminator resolution will match the resolution of the RTI plot data.
         * [**axvlines**] (None or list of datetime.datetime): Dashed vertical lines will be drawn at each specified datetime.datetime.
@@ -416,6 +419,7 @@ class musicRTI(object):
         axis                    = None,
         scale                   = None,
         plotZeros               = False, 
+        max_sounding_time       = datetime.timedelta(minutes=4),
         xBoundaryLimits         = None,
         yBoundaryLimits         = None,
         yticks                  = None,
@@ -429,6 +433,9 @@ class musicRTI(object):
         plot_title              = True,
         plot_range_limits_label = True,
         cmap_handling           = 'superdarn',
+        cmap                    = None,
+        bounds                  = None,
+        norm                    = None,
         plot_cbar               = True,
         cbar_ticks              = None,
         cbar_shrink             = 1.0,
@@ -533,6 +540,8 @@ class musicRTI(object):
             for rg in range(nrGates-1):
                 if np.isnan(data[tm,rg]): continue
                 if data[tm,rg] == 0 and not plotZeros: continue
+                if max_sounding_time is not None:
+                    if (currentData.time[tm+1] - currentData.time[tm+0]) > max_sounding_time: continue
                 scan.append(data[tm,rg])
 
                 x1,y1 = xvec[tm+0],rnge[rg+0]
@@ -542,9 +551,12 @@ class musicRTI(object):
                 verts.append(((x1,y1),(x2,y2),(x3,y3),(x4,y4),(x1,y1)))
 
         if (cmap_handling == 'matplotlib') or autoScale:
-            cmap = matplotlib.cm.jet
-            bounds  = np.linspace(scale[0],scale[1],256)
-            norm    = matplotlib.colors.BoundaryNorm(bounds,cmap.N)
+            if cmap is None:
+                cmap = matplotlib.cm.jet
+            if bounds is None:
+                bounds  = np.linspace(scale[0],scale[1],256)
+            if norm is None:
+                norm    = matplotlib.colors.BoundaryNorm(bounds,cmap.N)
         elif cmap_handling == 'superdarn':
             colors  = 'lasse'
             cmap,norm,bounds = utils.plotUtils.genCmap(param,scale,colors=colors)
@@ -787,6 +799,16 @@ class musicRTI(object):
 
             txt     = 'Beam '+str(beam)
             fig.text(xmax,title_y,txt,weight=550,ha='right')
+
+        cbar_info           = {}
+        cbar_info['cmap']   = cmap
+        cbar_info['bounds'] = bounds 
+        cbar_info['norm']   = norm 
+        cbar_info['label']  = cbarLabel
+        cbar_info['ticks']  = cbar_ticks
+        cbar_info['mappable']  = pcoll
+        self.cbar_info      = cbar_info
+
 
 def plotRelativeRanges(dataObj,dataSet='active',time=None,fig=None):
     """Plots the N-S and E-W distance from the center cell of a field-of-view in a pydarn.proc.music.musicArray object.
