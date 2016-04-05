@@ -654,8 +654,10 @@ class MapConv(object):
         cntrPlt = self.mObj.contour( xCnt, yCnt, potCntr, 
             zorder = 2.,
             vmax=potCntr.max(), vmin=potCntr.min(), 
-            colors = 'DarkSlateGray', linewidths=1., 
-            locator=LinearLocator(12) )
+            colors = 'DarkSlateGray', linewidths=1.,)
+        # Disabled until due to possible matplotlib bug.
+        # See https://github.com/matplotlib/matplotlib/issues/6270
+#            locator=LinearLocator(12) )
         plt.clabel(cntrPlt, inline=1, fontsize=10)
         return cntrPlt
 
