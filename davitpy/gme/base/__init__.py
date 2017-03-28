@@ -16,14 +16,14 @@ gmeBase     base class for gme data
 """
 import logging
 
-try: import gmeBase
-except Exception,e: logging.exception(e)
+try: from . import gmeBase
+except Exception as e: logging.exception(e)
 
-try: from gmeBase import *
-except Exception,e: logging.exception(e)
+try: from .gmeBase import *
+except Exception as e: logging.exception(e)
 
-try: import fillGmedb
-except Exception,e: logging.exception(e)
+try: from . import fillGmedb
+except Exception as e: logging.exception(e)
 
-try: from fillGmedb import *
-except Exception,e: logging.exception(e)
+try: from .fillGmedb import *
+except Exception as e: logging.exception(e)

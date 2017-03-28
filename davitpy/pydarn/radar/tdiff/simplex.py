@@ -75,7 +75,7 @@ def rigerous_simplex(x0, args, minfunc, tol, maxiter=500):
             xmin = local_min
 
         if abs(new_xmin - xmin) < tol:
-            if local_min is None and not func_min.has_key(res['fun']):
+            if local_min is None and res['fun'] not in func_min:
                 # This function likely has a lot of local minima.  Give xmin
                 # a kick in both directions and see if it is stable
                 local_min = xmin
@@ -84,7 +84,7 @@ def rigerous_simplex(x0, args, minfunc, tol, maxiter=500):
                 tsign = np.sign(xmin - x0)
                 new_xmin += tinc * tsign
                 func_min[res['fun']] = [1, tinc, tsign, xmin, res]
-            elif func_min.has_key(res['fun']) and func_min[res['fun']][0] == 1:
+            elif res['fun'] in func_min and func_min[res['fun']][0] == 1:
                 # Now try the second direction
                 fmin = func_min[res['fun']]
                 new_xmin = fmin[3] - fmin[2] * fmin[1]

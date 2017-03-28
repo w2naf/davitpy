@@ -326,7 +326,7 @@ def davitpy_fname():
       system-defined copy.
     """
     if six.PY2:
-        cwd = os.getcwdu()
+        cwd = os.getcwd()
     else:
         cwd = os.getcwd()
     fname = os.path.join(cwd, 'davitpyrc')
@@ -458,7 +458,7 @@ See rcParams.keys() for a list of valid parameters.' % (key,))
         """
         Return values in order of sorted keys.
         """
-        return [self[k] for k in self.keys()]
+        return [self[k] for k in list(self.keys())]
 
     def find_all(self, pattern):
         """
@@ -471,7 +471,7 @@ See rcParams.keys() for a list of valid parameters.' % (key,))
         import re
         pattern_re = re.compile(pattern)
         return RcParams((key, value)
-                        for key, value in self.items()
+                        for key, value in list(self.items())
                         if pattern_re.search(key))
 
 
@@ -614,20 +614,20 @@ rcParams = rc_params()
 
 try:
     from davitpy import pydarn
-except Exception, e:
+except Exception as e:
     logging.exception('problem importing pydarn: ' + str(e))
 
 try:
     from davitpy import gme
-except Exception, e:
+except Exception as e:
     logging.exception('problem importing gme: ' + str(e))
 
 try:
     from davitpy import utils
-except Exception, e:
+except Exception as e:
     logging.exception('problem importing utils: ' + str(e))
 
 try:
     from davitpy import models
-except Exception, e:
+except Exception as e:
     logging.exception('problem importing models: ' + str(e))

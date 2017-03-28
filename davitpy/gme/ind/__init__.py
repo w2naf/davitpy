@@ -34,28 +34,28 @@ symasy  SYM/ASY data
 """
 import logging
 
-try: import kp
-except Exception, e: logging.exception(e)
-try: from kp import *
-except Exception, e: logging.exception(e)
+try: from . import kp
+except Exception as e: logging.exception(e)
+try: from .kp import *
+except Exception as e: logging.exception(e)
 
-try: import omni
-except Exception, e: logging.exception(e)
-try: from omni import *
-except Exception, e: logging.exception(e)
+try: from . import omni
+except Exception as e: logging.exception(e)
+try: from .omni import *
+except Exception as e: logging.exception(e)
 
 
-try: import dst
-except Exception, e: logging.exception(e)
-try: from dst import *
-except Exception, e: logging.exception(e)
+try: from . import dst
+except Exception as e: logging.exception(e)
+try: from .dst import *
+except Exception as e: logging.exception(e)
 
-try: import ae
-except Exception, e: logging.exception(e)
-try: from ae import *
-except Exception, e: logging.exception(e)
+try: from . import ae
+except Exception as e: logging.exception(e)
+try: from .ae import *
+except Exception as e: logging.exception(e)
 
-try: import symasy
-except Exception, e: logging.exception(e)
-try: from symasy import *
-except Exception, e: logging.exception(e)
+try: from . import symasy
+except Exception as e: logging.exception(e)
+try: from .symasy import *
+except Exception as e: logging.exception(e)

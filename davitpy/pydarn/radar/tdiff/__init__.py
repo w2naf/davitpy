@@ -19,8 +19,8 @@ simplex
     Simplex minimizaiton routine
 """
 
-import rad_freqbands
-import simplex
-import bscatter_distribution
-import calc_tdiff
-import test_tdiff
+from . import rad_freqbands
+from . import simplex
+from . import bscatter_distribution
+from . import calc_tdiff
+from . import test_tdiff

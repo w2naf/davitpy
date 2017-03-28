@@ -306,7 +306,7 @@ def readSymAsyWeb(sTime,eTime=None):
         if(l[0] == ' ' or l[0:4] == 'DATE'): continue
         cols=l.split()
         try: symList.append(symAsyRec(webLine=l))
-        except Exception,e:
+        except Exception as e:
             logging.exception(e)
             logging.exception('problem initializing symAsy object')
         
@@ -375,7 +375,7 @@ def mapSymAsyMongo(sYear,eYear=None):
             #if this is an existing record, update it
             elif(cnt == 1):
                 logging.debug('found one!!')
-                dbDict = qry.next()
+                dbDict = next(qry)
                 temp = dbDict['_id']
                 dbDict = tempRec
                 dbDict['_id'] = temp

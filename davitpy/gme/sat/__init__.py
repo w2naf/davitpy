@@ -16,14 +16,14 @@ rbsp    NASA's Van Allen probes (ex. RBSP)
 """
 import logging
 
-try: from goes import *
-except Exception, e:
+try: from .goes import *
+except Exception as e:
     logging.exception(__file__ + ' -> gme.sat.goes: ' + str(e))
 
-try: from poes import *
-except Exception, e:
+try: from .poes import *
+except Exception as e:
     logging.exception(__file__ + ' -> gme.sat.poes: ' + str(e))
 
-try: from rbsp import *
-except Exception, e:
+try: from .rbsp import *
+except Exception as e:
     logging.exception(__file__+' -> gme.sat.rbsp: ' + str(e))

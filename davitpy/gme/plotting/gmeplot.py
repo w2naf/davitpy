@@ -112,7 +112,7 @@ def plotGME(gmiList,parameter=None,sTime=None,eTime=None,ymin=None,ymax=None,
   if figure == None: figure = mp.figure()
 
   for param in parameter:
-    if data.has_key(param.lower()) == False: continue
+    if (param.lower() in data) == False: continue
     mp.plot(times,data[param.lower()],label=param.upper())
 
   mp.ylim(ymin,ymax)
@@ -227,8 +227,8 @@ def plotOmni(omniList,parameter=None,sTime=None,eTime=None,ymin=None,
   if figure == None: figure = mp.figure()
   
   for param in parameter:
-    if data.has_key(param.lower()) == False: logging.info(param.lower())
-    if data.has_key(param.lower()) == False: continue
+    if (param.lower() in data) == False: logging.info(param.lower())
+    if (param.lower() in data) == False: continue
     mp.plot(times,data[param.lower()],label=param.upper())
   
   mp.ylim(ymin,ymax)

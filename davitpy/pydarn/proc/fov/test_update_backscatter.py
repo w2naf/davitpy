@@ -48,7 +48,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.collections as mcol
 import matplotlib.colors as mcolors
 # Import DaViTpy packages
-import update_backscatter as ub
+from . import update_backscatter as ub
 
 #--------------------------------------------------------------------------
 # Define the colors (can be overwritten)
@@ -375,27 +375,27 @@ def plot_yeoman_plate1(intensity_all="p_l", intensity_sep="fovelv",
                            tdiff_e_args=tdiff_e_args, ptest=ptest, step=step,
                            strict_gs=strict_gs, beams=beams)
 
-    rad = rad_bms.keys()[0]
-    if not dout[0].has_key(rad) or len(dout[0][rad]) == 0:
-        estr = "can't find radar [" + rad + "] in data:" + dout[0].keys()
+    rad = list(rad_bms.keys())[0]
+    if rad not in dout[0] or len(dout[0][rad]) == 0:
+        estr = "can't find radar [" + rad + "] in data:" + list(dout[0].keys())
         logging.error(estr)
         return(dout[0], dout[1], dout[2], beams)
 
     # Recast the data as numpy arrays
-    xtime = {rad:np.array(dout[0][rad]) for rad in rad_bms.keys()}
-    yrange = {rad:np.array(dout[1][rad]) for rad in rad_bms.keys()}
-    zdata = {rad:{ii:np.array(dout[2][ii][rad]) for ii in dout[2].keys()}
-             for rad in rad_bms.keys()}
-    zi = {rad:{ff:{hh:dout[3][ff][rad][hh] for hh in dout[3][ff][rad].keys()}
-          for ff in dout[3].keys()} for rad in rad_bms.keys()}
+    xtime = {rad:np.array(dout[0][rad]) for rad in list(rad_bms.keys())}
+    yrange = {rad:np.array(dout[1][rad]) for rad in list(rad_bms.keys())}
+    zdata = {rad:{ii:np.array(dout[2][ii][rad]) for ii in list(dout[2].keys())}
+             for rad in list(rad_bms.keys())}
+    zi = {rad:{ff:{hh:dout[3][ff][rad][hh] for hh in list(dout[3][ff][rad].keys())}
+          for ff in list(dout[3].keys())} for rad in list(rad_bms.keys())}
 
     # Initialize the figure
     iax = {ff:i for i,ff in enumerate(["all",1,-1,0])}
     irad = {rad:i for i,rad in enumerate(rad_bms.keys())}
     f = plt.figure(figsize=(12,10))
     ax = {rad:{ff:f.add_subplot(4,2,2*(iax[ff]+1)-irad[rad])
-               for ff in iax.keys()} for rad in irad.keys()}
-    pos = {ff:[.91,.14+(3-iax[ff])*.209,.01,.183] for ff in iax.keys()}
+               for ff in list(iax.keys())} for rad in list(irad.keys())}
+    pos = {ff:[.91,.14+(3-iax[ff])*.209,.01,.183] for ff in list(iax.keys())}
     xpos = {13:2.3, 12:2.2, 11:2.1, 10:1.95, 9:1.9, 8:1.8, 7:1.7, 6:1.6, 5:1.5,
             4:1.4, 3:1.3, 2:1.2, 1:1.1}
     ylabel = {"all":"Range Gate",1:"Front\nRange Gate",-1:"Rear\nRange Gate",
@@ -405,9 +405,9 @@ def plot_yeoman_plate1(intensity_all="p_l", intensity_sep="fovelv",
     labels = list()
 
     # Cycle through each plot, adding the appropriate data
-    for rad in irad.keys():
+    for rad in list(irad.keys()):
         # Cycle through the field-of-view keys
-        for ff in ax[rad].keys():
+        for ff in list(ax[rad].keys()):
             # Add a background color to the subplot
             ax[rad][ff].set_axis_bgcolor(acolor)
 
@@ -423,7 +423,7 @@ def plot_yeoman_plate1(intensity_all="p_l", intensity_sep="fovelv",
                                           marker=mm[marker_key][ff])
             else:
                 ii = intensity_sep
-                for hh in mc[marker_key].keys():
+                for hh in list(mc[marker_key].keys()):
                     zz = zi[rad][ff][hh]
                     try:
                         label = "{:.1f}".format(hh)
@@ -463,7 +463,7 @@ def plot_yeoman_plate1(intensity_all="p_l", intensity_sep="fovelv",
                 if ii is not "hop":
                     label = pyrad.radUtils.getParamDict(ii)['label']
                     unit = pyrad.radUtils.getParamDict(ii)['unit']
-                    if not iinc.has_key(ii):
+                    if ii not in iinc:
                         iinc[ii] = 6
                     cb[ff] = add_colorbar(f, con, imin[ii], imax[ii], iinc[ii],
                                           label, unit, loc=pos[ff])
@@ -676,17 +676,17 @@ def plot_milan_figure9(intensity_all="p_l", intensity_sep="p_l",
                            ptest=ptest, step=step, strict_gs=strict_gs,
                            beams=beams)
 
-    if not dout[0].has_key(rad) or len(dout[0][rad]) == 0:
-        estr = "can't find radar [" + rad + "] in data:" + dout[0].keys()
+    if rad not in dout[0] or len(dout[0][rad]) == 0:
+        estr = "can't find radar [" + rad + "] in data:" + list(dout[0].keys())
         logging.error(estr)
         return(dout[0], dout[1], dout[2], beams)
 
     # Recast the data as numpy arrays
     xtime = np.array(dout[0][rad])
     yrange = np.array(dout[1][rad])
-    zdata = {ff:np.array(dout[2][ff][rad]) for ff in dout[2].keys()}
-    zi = {ff:{hh:dout[3][ff][rad][hh] for hh in dout[3][ff][rad].keys()}
-          for ff in dout[3].keys()}
+    zdata = {ff:np.array(dout[2][ff][rad]) for ff in list(dout[2].keys())}
+    zi = {ff:{hh:dout[3][ff][rad][hh] for hh in list(dout[3][ff][rad].keys())}
+          for ff in list(dout[3].keys())}
 
     # Initialize the figure
     f = plt.figure(figsize=(7,10))
@@ -899,17 +899,17 @@ def plot_storm_figures(intensity_all="v", intensity_sep="v", marker_key="reg",
                            ptest=ptest, step=step, strict_gs=strict_gs,
                            beams=beams)
 
-    if not dout[0].has_key(rad) or len(dout[0][rad]) == 0:
-        estr = "can't find radar [" + rad + "] in data:" + dout[0].keys()
+    if rad not in dout[0] or len(dout[0][rad]) == 0:
+        estr = "can't find radar [" + rad + "] in data:" + list(dout[0].keys())
         logging.error(estr)
         return(dout[0], dout[1], dout[2], beams)
 
     # Recast the data as numpy arrays
     xtime = np.array(dout[0][rad])
     yrange = np.array(dout[1][rad])
-    zdata = {ff:np.array(dout[2][ff][rad]) for ff in dout[2].keys()}
-    zi = {ff:{hh:dout[3][ff][rad][hh] for hh in dout[3][ff][rad].keys()}
-          for ff in dout[3].keys()}
+    zdata = {ff:np.array(dout[2][ff][rad]) for ff in list(dout[2].keys())}
+    zi = {ff:{hh:dout[3][ff][rad][hh] for hh in list(dout[3][ff][rad].keys())}
+          for ff in list(dout[3].keys())}
 
     # Initialize the time figure
     f = plt.figure(figsize=(7,10))
@@ -942,7 +942,7 @@ def plot_storm_figures(intensity_all="v", intensity_sep="v", marker_key="reg",
     if mlen > 0:
         # Add lines corresponding to map times to each line of the plot
         for mt in mtimes:
-            for a in ax.values():
+            for a in list(ax.values()):
                 a.plot([mt, mt], [-1, 76], "k--")
 
         # Initialize the map figure
@@ -955,7 +955,7 @@ def plot_storm_figures(intensity_all="v", intensity_sep="v", marker_key="reg",
             mmm = None
             for ia,mt in enumerate(sorted(mtimes)):
                 scan = list()
-                for k in beams[rad].keys():
+                for k in list(beams[rad].keys()):
                     j = 0
                     while j < len(beams[rad][k]):
                         if beams[rad][k][j].scan_time > mt:
@@ -1041,7 +1041,7 @@ def plot_storm_figures(intensity_all="v", intensity_sep="v", marker_key="reg",
             for ia,mt in enumerate(sorted(mtimes)):
                 # Load data
                 scan = list()
-                for k in beams[rad].keys():
+                for k in list(beams[rad].keys()):
                     j = 0
                     while j < len(beams[rad][k]):
                         if beams[rad][k][j].scan_time > mt:
@@ -1228,31 +1228,31 @@ def plot_single_column(f, xdata, ydata, zdata, zindices, zname, color,
 
     # Ensure the z limits have been set
     if zmin is None:
-        zmin = {ff:zdata[ff].min() for ff in zdata.keys()}
+        zmin = {ff:zdata[ff].min() for ff in list(zdata.keys())}
     if zmax is None:
-        zmax = {ff:zdata[ff].max() for ff in zdata.keys()}
+        zmax = {ff:zdata[ff].max() for ff in list(zdata.keys())}
 
     # Initialize the subplots
     xpos = {8:1.1, 7:1.1, 6:1.0, 5:0.9, 4:0.8, 3:0.7, 2:0.5, 1:0.0}
     iax = {ff:i for i,ff in enumerate(["all",1,-1,0])}
-    ax = {ff:f.add_subplot(4,1,iax[ff]+1) for ff in iax.keys()}
+    ax = {ff:f.add_subplot(4,1,iax[ff]+1) for ff in list(iax.keys())}
     ypos = 0.89
-    for zz in zmax.keys():
+    for zz in list(zmax.keys()):
         if abs(zmin[zz]) > 100.0 or abs(zmax[zz]) > 100.0:
             ypos = 0.85
 
-    pos = {ff:[ypos,.14+(3-iax[ff])*.209,.01,.184] for ff in iax.keys()}
+    pos = {ff:[ypos,.14+(3-iax[ff])*.209,.01,.184] for ff in list(iax.keys())}
     cb = dict()
     hops = list()
-    for ff in zindices.keys():
-        hops.extend([hh for hh in zindices[ff].keys()
+    for ff in list(zindices.keys()):
+        hops.extend([hh for hh in list(zindices[ff].keys())
                      if len(zindices[ff][hh]) > 0 and hh != "all"])
     hops = list(set(hops))
     handles = list()
     labels = list()
 
     # Cycle through the field-of-view keys
-    for ff in iax.keys():
+    for ff in list(iax.keys()):
         # Set the plot background color
         ax[ff].set_axis_bgcolor(acolor)
 
@@ -1357,7 +1357,7 @@ def plot_single_column(f, xdata, ydata, zdata, zindices, zname, color,
         if ii is not "hop" and ii is not "reg":
             label = pyrad.radUtils.getParamDict(ii)['label']
             unit = pyrad.radUtils.getParamDict(ii)['unit']
-            if not zinc.has_key(ii):
+            if ii not in zinc:
                 zinc[ii] = 6
             cb[ff] = add_colorbar(f, con, zmin[ii], zmax[ii], zinc[ii], label,
                                   unit, loc=pos[ff])
@@ -1514,8 +1514,8 @@ def load_test_beams(intensity_all, intensity_sep, stime, etime, rad_bms,
     zi = {"all":dict(), 1:dict(), 0:dict(), -1:dict()}
 
     # For each radar, load and process the desired data
-    for rad in rad_bms.keys():
-        if not beams.has_key(rad):
+    for rad in list(rad_bms.keys()):
+        if rad not in beams:
             # Load data for one radar, padding data based on the largest
             # temporal boxcar window used in the FoV processing
             rad_ptr = sdio.radDataRead.radDataOpen(stime-ut_box, rad,
@@ -1523,7 +1523,7 @@ def load_test_beams(intensity_all, intensity_sep, stime, etime, rad_bms,
                                                    cp=rad_cp[rad],
                                                    fileType=file_type,
                                                    password=password)
-            if fix_gs.has_key(rad):
+            if rad in fix_gs:
                 read_ptr = list()
                 i = 0
                 bm, i = ub.get_beam(rad_ptr, i)
@@ -1558,18 +1558,18 @@ def load_test_beams(intensity_all, intensity_sep, stime, etime, rad_bms,
         xtime[rad] = list()
         yrange[rad] = list()
         idat = dict()
-        for k in zdata.keys():
+        for k in list(zdata.keys()):
             zdata[k][rad] = list()
             idat[k] = list()
-        for ff in zi.keys():
-            zi[ff][rad] = {hh:list() for hh in mm[marker_key].keys()}
+        for ff in list(zi.keys()):
+            zi[ff][rad] = {hh:list() for hh in list(mm[marker_key].keys())}
 
         if len(beams[rad][rad_bms[rad]]) > 0:
             j = 0
             for bm in beams[rad][rad_bms[rad]]:
                 if(hasattr(bm, "fit") and hasattr(bm.fit, intensity_all)
                    and (hasattr(bm.fit, intensity_sep))):
-                    for k in idat.keys():
+                    for k in list(idat.keys()):
                         idat[k] = getattr(bm.fit, k)
 
                     if hasattr(bm.fit, marker_key):
@@ -1588,7 +1588,7 @@ def load_test_beams(intensity_all, intensity_sep, stime, etime, rad_bms,
                             (strict_gs and bm.fit.gflg[i] >= 0))):
                             xtime[rad].append(bm.time)
                             yrange[rad].append(s)
-                            for k in idat.keys():
+                            for k in list(idat.keys()):
                                 zdata[k][rad].append(idat[k][i])
 
                             zi[bm.fit.fovflg[i]][rad][ikey[i]].append(j)
@@ -1690,7 +1690,7 @@ def plot_scan_and_beam(scan, beam, fattr="felv", rattr="belv", fhop_attr="fhop",
     """
     import davitpy.pydarn.radar as pyrad
 
-    mkey = fhop_attr if mm.has_key(fhop_attr) else fhop_attr[1:]
+    mkey = fhop_attr if fhop_attr in mm else fhop_attr[1:]
     xpos = {7:1.1, 6:0.49, 5:0.35, 4:0.8, 3:0.7, 2:0.5, 1:0.0}
 
     # Extract the scan data
@@ -1699,8 +1699,8 @@ def plot_scan_and_beam(scan, beam, fattr="felv", rattr="belv", fhop_attr="fhop",
     brange = list()
     fbeam = list()
     rbeam = list()
-    bhop = {ff:{hh:list() for hh in mc[mkey].keys()} for ff in [1,0,-1]}
-    bfov = {ff:{hh:list() for hh in mm[mkey].keys()} for ff in [1,0,-1]}
+    bhop = {ff:{hh:list() for hh in list(mc[mkey].keys())} for ff in [1,0,-1]}
+    bfov = {ff:{hh:list() for hh in list(mm[mkey].keys())} for ff in [1,0,-1]}
     j = 0
 
     for bm in scan:
@@ -1734,7 +1734,7 @@ def plot_scan_and_beam(scan, beam, fattr="felv", rattr="belv", fhop_attr="fhop",
                 fi = ff[i] if abs(ff[i]) == 1 else (1 if not np.isnan(fd[i])
                                                     else -1)
                 fe = fd[i] if fi == 1 else rd[i]
-                if not np.isnan(fe) and bhop[fi].has_key(hh[fi][i]):
+                if not np.isnan(fe) and hh[fi][i] in bhop[fi]:
                     xbeam.append(bm.bmnum)
                     brange.append(s)
                     fbeam.append(fd[i])
@@ -1742,7 +1742,7 @@ def plot_scan_and_beam(scan, beam, fattr="felv", rattr="belv", fhop_attr="fhop",
                     bfov[ff[i]][hh[fi][i]].append(j)
                     bfov[ff[i]]['all'].append(j)
                     bhop[fi][hh[fi][i]].append(j)
-                    if bhop[fi].has_key(hh[-fi][i]):
+                    if hh[-fi][i] in bhop[fi]:
                         bhop[-fi][hh[-fi][i]].append(j)
                     j += 1
 
@@ -1757,8 +1757,8 @@ def plot_scan_and_beam(scan, beam, fattr="felv", rattr="belv", fhop_attr="fhop",
     trange=list()
     ftime=list()
     rtime=list()
-    thop={ff:{hh:list() for hh in mc[mkey].keys()} for ff in [1,0,-1]}
-    tfov={ff:{hh:list() for hh in mm[mkey].keys()} for ff in [1,0,-1]}
+    thop={ff:{hh:list() for hh in list(mc[mkey].keys())} for ff in [1,0,-1]}
+    tfov={ff:{hh:list() for hh in list(mm[mkey].keys())} for ff in [1,0,-1]}
     j = 0
 
     for bm in beam:
@@ -1791,7 +1791,7 @@ def plot_scan_and_beam(scan, beam, fattr="felv", rattr="belv", fhop_attr="fhop",
                                                     else -1)
                 fe = fd[i] if fi == 1 else rd[i]
 
-                if not np.isnan(fe) and thop[fi].has_key(hh[fi][i]):
+                if not np.isnan(fe) and hh[fi][i] in thop[fi]:
                     xtime.append(bm.time)
                     trange.append(s)
                     ftime.append(fd[i])
@@ -1799,7 +1799,7 @@ def plot_scan_and_beam(scan, beam, fattr="felv", rattr="belv", fhop_attr="fhop",
                     tfov[ff[i]][hh[fi][i]].append(j)
                     tfov[ff[i]]['all'].append(j)
                     thop[fi][hh[fi][i]].append(j)
-                    if thop[-fi].has_key(hh[-fi][i]):
+                    if hh[-fi][i] in thop[-fi]:
                         thop[-fi][hh[-fi][i]].append(j)
                     j += 1
     xtime = np.array(xtime)
@@ -1850,7 +1850,7 @@ def plot_scan_and_beam(scan, beam, fattr="felv", rattr="belv", fhop_attr="fhop",
             tmax = mdates.date2num(max(xtime))
 
     # Plot the contours and markers
-    for hh in mc[mkey].keys():
+    for hh in list(mc[mkey].keys()):
         if len(bhop[1][hh]) > 0:
             # Scans
             con = fbax.scatter(xbeam[bhop[1][hh]], brange[bhop[1][hh]],
@@ -2274,7 +2274,7 @@ def plot_meteor_figure(fcolor="b", rcolor="m", stime=dt.datetime(2001,12,14),
     # End local routines
     #-------------------------------------------------------------------------
     # Load and process the desired data
-    if not beams.has_key(fbmnum) or not beams.has_key(rbmnum):
+    if fbmnum not in beams or rbmnum not in beams:
         # Load the SuperDARN data, padding data based on the largest
         # temporal boxcar window used in the FoV processing
         rad_ptr = sdio.radDataRead.radDataOpen(stime-ut_box, rad,
@@ -2292,7 +2292,7 @@ def plot_meteor_figure(fcolor="b", rcolor="m", stime=dt.datetime(2001,12,14),
                                       logfile=logfile, log_level=log_level,
                                       step=step)
 
-    if not beams.has_key(fbmnum) or not beams.has_key(rbmnum):
+    if fbmnum not in beams or rbmnum not in beams:
         return(None, None, None, beams)
 
     if len(beams[fbmnum]) == 0 or len(beams[rbmnum]) == 0:
@@ -2310,7 +2310,7 @@ def plot_meteor_figure(fcolor="b", rcolor="m", stime=dt.datetime(2001,12,14),
     yspeed = {fbmnum:list(), rbmnum:list(), "reject":list()} # FoV speeds
     hspeed = {fbmnum:list(), rbmnum:list(), "reject":list()} # HWM speeds
 
-    for ff in bmnum.keys():
+    for ff in list(bmnum.keys()):
         for bm in beams[bmnum[ff]]:
             for i,ifov in enumerate(bm.fit.fovflg):
                 if bm.fit.slist[i] >= 5:
@@ -2350,7 +2350,7 @@ def plot_meteor_figure(fcolor="b", rcolor="m", stime=dt.datetime(2001,12,14),
                             hspeed[skey].append(winds[0])
 
     # Recast the data as numpy arrays
-    for skey in yspeed.keys():
+    for skey in list(yspeed.keys()):
         yspeed[skey] = np.array(yspeed[skey])
         hspeed[skey] = np.array(hspeed[skey])
 
@@ -2391,7 +2391,7 @@ def plot_meteor_figure(fcolor="b", rcolor="m", stime=dt.datetime(2001,12,14),
     fax = f.add_subplot(3,2,2)
     rax = f.add_subplot(3,2,4)
     nax = f.add_subplot(3,2,6)
-    vdiff = {skey:yspeed[skey]-hspeed[skey] for skey in yspeed.keys()}
+    vdiff = {skey:yspeed[skey]-hspeed[skey] for skey in list(yspeed.keys())}
     fnum = fax.hist(vdiff[bmnum[1]], diff_inc, range=diff_range, color=fcolor)
     rnum = rax.hist(vdiff[bmnum[-1]], diff_inc, range=diff_range, color=rcolor)
     nnum = nax.hist(vdiff["reject"], diff_inc, range=diff_range, color="0.6")
@@ -2578,7 +2578,7 @@ def plot_map(ax, scan, hard=None, map_handle=None, fovs={1:None,-1:None},
                 fan_fov[bm.bmnum, bm.fit.slist[i]] = fovflg[i]
 
     # Load the field-of-view data, if necessary
-    for ff in fovs.keys():
+    for ff in list(fovs.keys()):
         if fovs[ff] is None:
             fovs[ff] = pyrad.radFov.fov(site=hard, rsep=scan[0].prm.rsep,
                                         nbeams=hard.maxbeam, ngates=maxgates,
@@ -2611,7 +2611,7 @@ def plot_map(ax, scan, hard=None, map_handle=None, fovs={1:None,-1:None},
                                  labels=[lat_label,0,0,0])
 
     # Add the field-of-view boundaries
-    for ff in fovs.keys():
+    for ff in list(fovs.keys()):
         plotting.mapOverlay.overlayFov(map_handle, ids=scan[0].stid,
                                        dateTime=scan[0].time,
                                        beams=plot_beams[ff],

@@ -51,7 +51,7 @@ def readPrintRec(filename):
 
     # open the file
     try: fp = open(filename)
-    except Exception, e:
+    except Exception as e:
         logging.exception(e)
         logging.exception('problem opening the file %s', filename)
         return None

@@ -168,7 +168,7 @@ class kpDay(gmeData):
     def __repr__(self):
         import datetime as dt
         myStr = 'Kp record FROM: '+str(self.time)+'\n'
-        for key,var in self.__dict__.iteritems():
+        for key,var in self.__dict__.items():
             myStr += key+' = '+str(var)+'\n'
         return myStr
 
@@ -340,19 +340,19 @@ def readKpFtp(sTime, eTime=None):
     
     #connect to the server
     try: ftp = FTP('ftp.gfz-potsdam.de')
-    except Exception,e:
+    except Exception as e:
         logging.exception(e)
         logging.exception('problem connecting to GFZ-Potsdam server')
         
     #login as anonymous
     try: l=ftp.login()
-    except Exception,e:
+    except Exception as e:
         logging.exception(e)
         logging.exception('problem logging in to GFZ-potsdam server')
     
     #go to the kp directory
     try: ftp.cwd('/pub/home/obs/kp-ap/wdc')
-    except Exception,e:
+    except Exception as e:
         logging.exception(e)
         logging.exception('error getting to data directory')
     
@@ -361,7 +361,7 @@ def readKpFtp(sTime, eTime=None):
     #get the data
     logging.debug('RETR kp' + str(sTime.year) + '.wdc')
     try:    ftp.retrlines('RETR kp'+str(sTime.year)+'.wdc',lines.append)
-    except Exception,e:
+    except Exception as e:
         logging.exception(e)
         logging.exception('couldnt retrieve kp file')
     
@@ -437,7 +437,7 @@ def mapKpMongo(sYear,eYear=None):
             #if this is an existing record, update it
             elif(cnt == 1):
                 logging.debug('foundone!!')
-                dbDict = qry.next()
+                dbDict = next(qry)
                 temp = dbDict['_id']
                 dbDict = tempRec
                 dbDict['_id'] = temp

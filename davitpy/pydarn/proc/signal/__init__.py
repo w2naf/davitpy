@@ -9,10 +9,10 @@ pydarn.proc.signal
 
 """
 
-from signal import *
-from sigproc import *
-from compare import *
-from xcor import *
+from .signal import *
+from .sigproc import *
+from .compare import *
+from .xcor import *
 
 # Define a few general-use constants
 # Mean Earth radius [km]

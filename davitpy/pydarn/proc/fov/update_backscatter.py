@@ -74,7 +74,7 @@ def assign_region(vheight, region_hmax={"D":115.0,"E":150.0,"F":900.0},
     region = ""
     rpad = {"D":0.0, "E":0.0, "F":1.0}
 
-    for rr in region_hmax.keys():
+    for rr in list(region_hmax.keys()):
         if region_hmin[rr] <= vheight and vheight < region_hmax[rr] + rpad[rr]:
             region = rr.lower() if case is "lower" else rr
 
@@ -112,13 +112,13 @@ def test_propagation(hop, vheight, dist,
     """
     good = True
 
-    if region_hmax.has_key("D") and vheight <= region_hmax["D"]:
+    if "D" in region_hmax and vheight <= region_hmax["D"]:
         if hop > 0.5 or dist > 500.0:
             # D-region backscatter is restricted to 0.5 hop ionospheric
             # backscatter near the radar (flat earth-approximation holds,
             # great circle distance is rounded down, to simplify things)
             good = False
-    elif region_hmax.has_key("E") and vheight <= region_hmax["E"]:
+    elif "E" in region_hmax and vheight <= region_hmax["E"]:
         if hop < 1.5 and dist > 900.0:
             # 0.5E and 1.0E backscatter is restrictued to slant path distances
             # of 1000 km or less.  1.5E backscatter is typically seen at far
@@ -199,7 +199,7 @@ def select_alt_groups(gate, vheight, rmin, rmax, vh_box, min_pnts=3):
         param = [0.0, 0.0, vh_box * 0.5]
         cbin = (hbin[:-1] + hbin[1:]) / 2.0
         hpeak = {hnum[ih]:ih for ih in hmax}
-        for hh in sorted(hpeak.keys(), reverse=True):
+        for hh in sorted(list(hpeak.keys()), reverse=True):
             ih = hpeak[hh]
             param[0] = hh
             param[1] = cbin[ih]
@@ -978,7 +978,7 @@ def update_bs_w_scan(scan, hard, min_pnts=3,
                                 beams[bnum-1].prm.lagfr)
                                / beams[bnum-1].prm.smsep)
 
-                for ff in e.keys():
+                for ff in list(e.keys()):
                     elvs[ff][bnum-1] = e[ff]
                     elv_errs[ff][bnum-1] = eerr[ff]
                     vheights[ff][bnum-1] = vh[ff]
@@ -1056,7 +1056,7 @@ def update_bs_w_scan(scan, hard, min_pnts=3,
                         rgrg.append(ir)
 
                         goodpath = False
-                        for ff in fov.values():
+                        for ff in list(fov.values()):
                             rgelv[ff].append(elvs[ff][bi][si])
                             rgvh[ff].append(vheights[ff][bi][si])
                             rghop[ff].append(hops[ff][bi][si])
@@ -1077,9 +1077,9 @@ def update_bs_w_scan(scan, hard, min_pnts=3,
         rgpath = set(["{:.1f}{:s}".format(rghop[ff][ii], reg)
                       for ii,reg in enumerate(rgreg[ff])
                       if len(reg) == 1 and not np.isnan(rghop[ff][ii])
-                      for ff in fov.values()])
+                      for ff in list(fov.values())])
 
-        for ff in fov.values():
+        for ff in list(fov.values()):
             rgelv[ff] = np.array(rgelv[ff])
             rgvh[ff] = np.array(rgvh[ff])
 
@@ -1091,7 +1091,7 @@ def update_bs_w_scan(scan, hard, min_pnts=3,
 
             # Seperate this propagation path into virtual height groups and
             # test the linear regression of the elevation angles
-            for ff in fov.keys():
+            for ff in list(fov.keys()):
                 itest = [it for it,fhop in enumerate(rghop[fov[ff]])
                          if fhop == hop and rgreg[fov[ff]][it] == reg]
 
@@ -1253,7 +1253,7 @@ def update_bs_w_scan(scan, hard, min_pnts=3,
 
                     # Load the front and back elevations for this range gate
                     # and within the extended range gate window
-                    for ff in fov.keys():
+                    for ff in list(fov.keys()):
                         ihop = hops[fov[ff]][bi][si]
                         ireg = regions[fov[ff]][bi][si]
                         test_rg = beams[bi].fit.slist[min_si:max_si]
@@ -1383,7 +1383,7 @@ def update_bs_w_scan(scan, hard, min_pnts=3,
         # azimuthally constraints (beam limits) added to the previous limits.
         # If there are an overwhelming number of points in one FoV, remove
         # all FoV flags from the points in the other Fov.
-        for ihop in fovhop.keys():
+        for ihop in list(fovhop.keys()):
             for ireg in set(reghop[ihop]):
                 rind = [ii for ii,rr in enumerate(reghop[ihop]) if rr == ireg]
                 # If there are sufficient points, evaluate the data at this hop
@@ -2220,7 +2220,7 @@ def beam_ut_struct_test(rad_bms, min_frac=.10, frg_box=[5,8,13,23],
                        / bm.prm.smsep)
 
         # Load the beams into the output dictionary
-        if beams.has_key(bnum):
+        if bnum in beams:
             beams[bnum].append(bm)
         else:
             beams[bnum] = [bm]
@@ -2239,7 +2239,7 @@ def beam_ut_struct_test(rad_bms, min_frac=.10, frg_box=[5,8,13,23],
     #-----------------------------------------------------------------------
     # Cycle through all the beams, updating the FoV flag and structure flag
     # once enough data has been loaded
-    for bnum in beams.keys():
+    for bnum in list(beams.keys()):
         bis = 0
         fovbelong = [[{"out":0, "in":0, "mix":0}
                       for j in beams[bnum][i].fit.slist]

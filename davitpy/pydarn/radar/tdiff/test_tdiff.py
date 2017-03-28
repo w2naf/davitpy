@@ -83,7 +83,7 @@ def test_simplex(plot_handle=None):
     In [3]: print min0, min1, min2
     -1.5708125 4.71238898038 -7.85400933085
     '''
-    from simplex import rigerous_simplex
+    from .simplex import rigerous_simplex
     
     def sin_func(angle_rad):
         return np.sin(angle_rad)
@@ -202,8 +202,8 @@ def test_calc_tdiff(file_type="fitacf", password=True, tdiff_plot=None):
                                                fileType=file_type,
                                                password=password, cp=radcp)
     except:
-        print "Unable to load tdiff test data:\nRadar: {:s}".format(rad)
-        print "Program: {:d}\nTime: {:} to {:}".format(radcp, stime, etime)
+        print("Unable to load tdiff test data:\nRadar: {:s}".format(rad))
+        print("Program: {:d}\nTime: {:} to {:}".format(radcp, stime, etime))
         return None, None, None
 
     hard = pyrad.site(code=rad, dt=stime)
@@ -275,7 +275,7 @@ def test_calc_tdiff(file_type="fitacf", password=True, tdiff_plot=None):
             hax = tdiff_plot.add_subplot(2,2,4)
             tax = tdiff_plot.add_subplot(2,2,3)
         except:
-            print "Unable to add subplots to figure"
+            print("Unable to add subplots to figure")
             return tout[0], trange, ldist
 
         # Add the title

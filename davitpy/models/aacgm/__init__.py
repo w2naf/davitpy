@@ -12,17 +12,17 @@ import logging
 
 try:
     from aacgm import mltFromEpoch
-except Exception, e:
+except Exception as e:
     logging.exception(__file__ + ' -> aacgm: ' + str(e))
 
 try:
     from aacgm import mltFromYmdhms
-except Exception, e:
+except Exception as e:
     logging.exception(__file__ + ' -> aacgm: ' + str(e))
 
 try:
     from aacgm import mltFromYrsec
-except Exception, e:
+except Exception as e:
     logging.exception(__file__ + ' -> aacgm: ' + str(e))
 
 

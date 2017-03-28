@@ -279,7 +279,7 @@ def readDstWeb(sTime,eTime=None):
         if(l[0] == ' ' or l[0:4] == 'DATE'): continue
         cols=l.split()
         try: dstList.append(dstRec(webLine=l))
-        except Exception,e:
+        except Exception as e:
             logging.exception(e)
             logging.exception('problemm assigning initializing dst object')
         
@@ -345,7 +345,7 @@ def mapDstMongo(sYear,eYear=None):
             #if this is an existing record, update it
             elif(cnt == 1):
                 logging.debug('foundone!!')
-                dbDict = qry.next()
+                dbDict = next(qry)
                 temp = dbDict['_id']
                 dbDict = tempRec
                 dbDict['_id'] = temp

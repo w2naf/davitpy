@@ -9,7 +9,7 @@ DEV: functions/modules/classes with a * have not been developed yet
 *******************************
 """
 #import sigio
-from music import *
+from .music import *
 #from signal import *
 #from sigproc import *
 #from compare import *

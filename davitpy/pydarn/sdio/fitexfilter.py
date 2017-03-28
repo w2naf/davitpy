@@ -116,7 +116,7 @@ def combBeams(scan):
 
             # initialize a new beam object
             beam.copyData(beams[0])
-            for key,val in beam.fit.__dict__.iteritems(): 
+            for key,val in beam.fit.__dict__.items(): 
                 setattr(beam.fit, key, [])
             beam.prm.nrang = nrang
 
@@ -129,7 +129,7 @@ def combBeams(scan):
                 if cnt / pos > .5:
                     beam.fit.slist.append(j)
                     beam.fit.qflg = 1
-                    for key in beam.fit.__dict__.iterkeys():
+                    for key in beam.fit.__dict__.keys():
                         if key == 'qflg' or key == 'gflg' or key == 'slist':
                             continue
                         arr = []
@@ -251,7 +251,7 @@ def doFilter(scans, thresh=.4):
         # make a new beam
         beam = pydarn.sdio.beamData()
         beam.copyData(b)
-        for key,val in beam.fit.__dict__.iteritems(): 
+        for key,val in beam.fit.__dict__.items(): 
             setattr(beam.fit,key,[])
 
         for r in range(0,b.prm.nrang):
