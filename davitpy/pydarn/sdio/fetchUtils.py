@@ -720,7 +720,7 @@ def test_fetchutils():
     except:
         print("FAILED!")
 
-    print("Finished testing. Success: {:s}/{:s}".format(str(success),str(tests)))
+    print(("Finished testing. Success: {:s}/{:s}".format(str(success),str(tests))))
 
 if __name__=="__main__":
     import os
@@ -742,7 +742,7 @@ if __name__=="__main__":
                                     username='sd_dbread', password='5d')
 
     print("Expected the file: ['/tmp/sd/20121124.north.mapex']")
-    print("Received the file: " + str(mapexFiles))
+    print(("Received the file: " + str(mapexFiles)))
     print("*************************************************")
 
     print("Attempting to fetch map files from the usask server...")
@@ -755,7 +755,7 @@ if __name__=="__main__":
                                   username='davitpy', password='d4vitPY-usask')
 
     print("Expected the files: ['/tmp/sd/20011124.map','/tmp/sd/20011124s.map']")
-    print("Received the files: " + str(mapFiles))
+    print(("Received the files: " + str(mapFiles)))
     print("*************************************************")
 
     print("Attempting to fetch a fitex file from the VT server...")
@@ -771,7 +771,7 @@ if __name__=="__main__":
     estr = "Expected the files: ['/tmp/sd/20131130.2201.00.mcm.a.fitex', "
     estr = "{:s}'/tmp/sd/20131201.0000.04.mcm.a.fitex', ".format(estr)
     estr = "{:s}'/tmp/sd/20131201.0201.00.mcm.a.fitex']".format(estr)
-    print("{:s}\nReceived the files: {:s}".format(estr, str(fitex)))
+    print(("{:s}\nReceived the files: {:s}".format(estr, str(fitex))))
     print("*************************************************")
 
     print("Attempting to fetch a fitex file from the VT server...")
@@ -787,7 +787,7 @@ if __name__=="__main__":
     estr = "{:s}'/tmp/sd/20130121.0201.00.ade.a.fitex', ".format(estr)
     estr = "{:s}'/tmp/sd/20130121.0349.59.ade.a.fitex', ".format(estr)
     estr = "{:s}'/tmp/sd/20130121.0401.00.ade.a.fitex']".format(estr)
-    print("{:s}\nReceived the files: {:s}".format(estr, str(fitex)))
+    print(("{:s}\nReceived the files: {:s}".format(estr, str(fitex))))
     print("*************************************************")
 
     print("Attempting to fetch fitacf files from the usask server...")
@@ -799,4 +799,4 @@ if __name__=="__main__":
                                 password='d4vitPY-usask')
 
     print("Expected the file: ['/tmp/sd/20121124.C0.sas.fitacf']")
-    print("Received the file: " + str(fitacf))
+    print(("Received the file: " + str(fitacf)))

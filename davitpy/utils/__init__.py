@@ -83,7 +83,7 @@ class twoWayDict(dict):
         
     """
     def __init__(self,initDict={}):
-        for key,val in initDict.items():
+        for key,val in list(initDict.items()):
             self[key] = val
             self[val] = key
 

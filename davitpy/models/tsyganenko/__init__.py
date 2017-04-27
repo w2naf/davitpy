@@ -481,7 +481,7 @@ bzimf={:3.0f}                       [nT]
 
         # Select indices to show
         if onlyPts is None:
-            inds = range(len(self.lat))
+            inds = list(range(len(self.lat)))
         else:
             try:
                 inds = [ip for ip in onlyPts]
@@ -599,7 +599,7 @@ bzimf={:3.0f}                       [nT]
 
         # Select indices to show
         if onlyPts is None:
-            inds = range(len(self.lat))
+            inds = list(range(len(self.lat)))
         else:
             try:
                 inds = [ip for ip in onlyPts]

@@ -168,7 +168,7 @@ class kpDay(gmeData):
     def __repr__(self):
         import datetime as dt
         myStr = 'Kp record FROM: '+str(self.time)+'\n'
-        for key,var in self.__dict__.items():
+        for key,var in list(self.__dict__.items()):
             myStr += key+' = '+str(var)+'\n'
         return myStr
 

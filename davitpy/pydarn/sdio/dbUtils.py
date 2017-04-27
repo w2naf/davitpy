@@ -212,7 +212,7 @@ def updateDbDict(dbdict, dmapdict):
     """
 
     # iterate through the items in the db dict
-    for key,val in dbdict.items():
+    for key,val in list(dbdict.items()):
         # pass over the mongodb _id param
         if(key == '_id'):
             continue
@@ -340,7 +340,7 @@ def readFromDb(sTime=None, eTime=None, stid=None, channel=None, bmnum=None,
     # make a dictionary telling which data types NOT to get,
     # eg dont get rawacf, iqdat, fitacf, lmfit for fitex request
     exdict = {}
-    for key,val in refArr.items():
+    for key,val in list(refArr.items()):
         if(key != flg):
             exdict[cipher[val]] = 0
 
@@ -399,7 +399,7 @@ def mapDbFit(date_str, rad, time=[0,2400], fileType='fitex'):
     # files are named
     hr1 = 2 * int(math.floor(time[0] / 50.0))
     hr2 = 2 * int(math.floor(time[1] / 50.0))
-    print("TEST!", hr1, int(math.floor(time[0] / 100. / 2.)*2))
+    print(("TEST!", hr1, int(math.floor(time[0] / 100. / 2.)*2)))
 
     min1 = int(time[0] - int(math.floor(time[0] / 100.0) * 100))
     min2 = int(time[1] - int(math.floor(time[1] / 1000.) * 100))

@@ -541,10 +541,10 @@ if __name__ == '__main__':
 
     test_results = []
     for flare,value in zip(flares,values):
-        print('  Testing classify_flare() with {0} ({1:.1e} W/m**2) flare...'.format(flare,value))
+        print(('  Testing classify_flare() with {0} ({1:.1e} W/m**2) flare...'.format(flare,value)))
 
         test_flare = classify_flare(value)
-        print('    classify_flare({0:.1e}) = {1}'.format(value,test_flare))
+        print(('    classify_flare({0:.1e}) = {1}'.format(value,test_flare)))
         test_results.append(flare == test_flare)
 
     if np.all(test_results):
@@ -555,9 +555,9 @@ if __name__ == '__main__':
     print('')
     test_results = []
     for flare,value in zip(flares,values):
-        print('  Testing flare_value() with {0} ({1:.1e} W/m**2) flare...'.format(flare,value))
+        print(('  Testing flare_value() with {0} ({1:.1e} W/m**2) flare...'.format(flare,value)))
         test_value = flare_value(flare)
-        print('    flare_value({0}) = {1:.1e}'.format(test_flare,value))
+        print(('    flare_value({0}) = {1:.1e}'.format(test_flare,value)))
         test_results.append(value == test_value)
 
     if np.all(test_results):
@@ -618,4 +618,4 @@ directory as your plots.
 """
 
     print(flares_str)
-    print('Your DAVIT_TMPDIR/goes: {0}'.format(output_dir))
+    print(('Your DAVIT_TMPDIR/goes: {0}'.format(output_dir)))

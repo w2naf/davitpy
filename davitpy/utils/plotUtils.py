@@ -821,7 +821,7 @@ if __name__ == "__main__":
     print("Close figure window to continue with example")
     plt.show()
 
-    print("\nComparing magnetic and MLT.  Time selected is " + str(time))
+    print(("\nComparing magnetic and MLT.  Time selected is " + str(time)))
     fig4=plt.figure(4)
     ax=None
     coords="mag"
@@ -834,9 +834,9 @@ if __name__ == "__main__":
     tmpmap5 = mapObj(coords=coords, projection="stere", draw=True,
                      boundinglat=40., lat_0=90., lon_0=0., resolution='l',
                      datetime=time, dateTime=time)
-    print("MLT at zero MLON should be at " + \
+    print(("MLT at zero MLON should be at " + \
       str(aacgm.mltFromYmdhms(time.year, time.month, time.day,
-                              time.hour, time.minute, time.second, 0.)))
+                              time.hour, time.minute, time.second, 0.))))
     print("Figures 4 and 5 should now appear.  Close their windows to continue.")
     plt.show()
 
@@ -848,12 +848,12 @@ if __name__ == "__main__":
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False)
     x,y = map1(-120,54)
-    print("    Expected: ",14898932.7446,-14364789.7586)
-    print("    Received: ",x,y)
+    print(("    Expected: ",14898932.7446,-14364789.7586))
+    print(("    Received: ",x,y))
     print("  map x/y to geo lat/lon")
     lon,lat = map1(x,y,inverse=True,coords='geo')
-    print("    Expected: ",-119.99999999999999, 54.000000000000014)
-    print("    Received: ",lon,lat)
+    print(("    Expected: ",-119.99999999999999, 54.000000000000014))
+    print(("    Received: ",lon,lat))
 
     print("\n  Converting mag lat/lon to map x/y to mag lat/lon.")
     print("  geo lat/lon to map x/y")
@@ -861,12 +861,12 @@ if __name__ == "__main__":
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False)
     x,y = map1(-120,54)
-    print("    Expected: ",14898932.7446,-14364789.7586)
-    print("    Received: ",x,y)
+    print(("    Expected: ",14898932.7446,-14364789.7586))
+    print(("    Received: ",x,y))
     print("  map x/y to geo lat/lon")
     lon,lat = map1(x,y,inverse=True,coords='mag')
-    print("    Expected: ",-119.99999999999999, 54.000000000000014)
-    print("    Received: ",lon,lat)
+    print(("    Expected: ",-119.99999999999999, 54.000000000000014))
+    print(("    Received: ",lon,lat))
 
     print("\n  Converting geo lat/lon to map x/y to mag lat/lon.")
     print("  geo lat/lon to map x/y")
@@ -874,12 +874,12 @@ if __name__ == "__main__":
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False)
     x,y = map1(-120,54)
-    print("    Expected: ",14898932.7446,-14364789.7586)
-    print("    Received: ",x,y)
+    print(("    Expected: ",14898932.7446,-14364789.7586))
+    print(("    Received: ",x,y))
     print("  map x/y to mag lat/lon")
     lon,lat = map1(x,y,inverse=True,coords='mag')
-    print("    Expected: ",-59.9940107681,59.9324622167)
-    print("    Received: ",lon,lat)
+    print(("    Expected: ",-59.9940107681,59.9324622167))
+    print(("    Received: ",lon,lat))
 
     print("\n  Converting mag lat/lon to map x/y to geo lat/lon.")
     print("  mag lat/lon to map x/y")
@@ -887,12 +887,12 @@ if __name__ == "__main__":
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False)
     x,y = map1(-120,54)
-    print("    Expected: ",14898932.7446,-14364789.7586)
-    print("    Received: ",x,y)
+    print(("    Expected: ",14898932.7446,-14364789.7586))
+    print(("    Received: ",x,y))
     print("  map x/y to geo lat/lon")
     lon,lat = map1(x,y,inverse=True,coords='geo')
-    print("    Expected: ",175.311901385,58.8384430722)
-    print("    Received: ",lon,lat)
+    print(("    Expected: ",175.311901385,58.8384430722))
+    print(("    Received: ",lon,lat))
 
     print("\n  Converting geo lat/lon from a mag map to map x/y.")
     print("  mag lat/lon to map x/y")
@@ -900,8 +900,8 @@ if __name__ == "__main__":
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False)
     x,y = map1(175.311901385,58.8384430722,coords='geo')
-    print("    Expected: ",14900062.142,-14366347.2577)
-    print("    Received: ",x,y)
+    print(("    Expected: ",14900062.142,-14366347.2577))
+    print(("    Received: ",x,y))
 
     print("\n  Converting mag lat/lon from a geo map to map x/y.")
     print("  mag lat/lon to map x/y")
@@ -909,34 +909,34 @@ if __name__ == "__main__":
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False)
     x,y = map1(-59.9940107681,59.9324622167,coords='mag')
-    print("    Expected: ",14902099.9295,-14362212.9526)
-    print("    Received: ",x,y)
+    print(("    Expected: ",14902099.9295,-14362212.9526))
+    print(("    Received: ",x,y))
 
     print("Testing datetime/dateTime checking.")
     print("Setting only datetime:")
     map1 = mapObj(coords='geo',projection='stere', llcrnrlon=100, llcrnrlat=0,
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False, datetime=time)
-    print("datetime: "+str(map1.datetime))
-    print("dateTime: "+str(map1.dateTime))
+    print(("datetime: "+str(map1.datetime)))
+    print(("dateTime: "+str(map1.dateTime)))
     print("Setting only dateTime:")
     map1 = mapObj(coords='geo',projection='stere', llcrnrlon=100, llcrnrlat=0,
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False, dateTime=time)
-    print("datetime: "+str(map1.datetime))
-    print("dateTime: "+str(map1.dateTime))
+    print(("datetime: "+str(map1.datetime)))
+    print(("dateTime: "+str(map1.dateTime)))
     print("Setting both the same:")
     map1 = mapObj(coords='geo',projection='stere', llcrnrlon=100, llcrnrlat=0,
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False, datetime=time, dateTime=time)
-    print("datetime: "+str(map1.datetime))
-    print("dateTime: "+str(map1.dateTime))
+    print(("datetime: "+str(map1.datetime)))
+    print(("dateTime: "+str(map1.dateTime)))
     print("Setting neither:")
     map1 = mapObj(coords='geo', projection='stere', llcrnrlon=100, llcrnrlat=0,
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,
                   resolution='l', draw=False)
-    print("datetime: "+str(map1.datetime))
-    print("dateTime: "+str(map1.dateTime))
+    print(("datetime: "+str(map1.datetime)))
+    print(("dateTime: "+str(map1.dateTime)))
     print("Setting to different times, should fail:")
     map1 = mapObj(coords='geo', projection='stere', llcrnrlon=100, llcrnrlat=0,
                   urcrnrlon=170, urcrnrlat=40, lat_0=54, lon_0=-120,

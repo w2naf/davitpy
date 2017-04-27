@@ -343,7 +343,7 @@ if __name__=="__main__":
                  '{date}.{hour}......{radar}.{channel}.{ftype}'], \
                 username='sd_dbread', password='5d', \
                 time_inc=datetime.timedelta(hours=2))
-    print("   Fetched the file: " + files[0] + "\n")
+    print(("   Fetched the file: " + files[0] + "\n"))
 
     print(" INITIALIZING A CLASS THAT INHERITS FROM DataPtr")
     t = pydarn.sdio.DataTypes.testing(stime, 'dmap', eTime, files[0])
@@ -375,12 +375,12 @@ if __name__=="__main__":
     t.offsetSeek(index[datetime.datetime(2012, 11, 24, 4, 4, 39, 141000)])
     offset = t.offsetTell()
     dfile = t.read()
-    print(" Seeked to time: {:}".format( \
-                        str(datetime.datetime.utcfromtimestamp(dfile['time']))))
+    print((" Seeked to time: {:}".format( \
+                        str(datetime.datetime.utcfromtimestamp(dfile['time'])))))
     print(" Telling the file offset...")
-    print(" Should get: {:} and we got: {:}".format( \
+    print((" Should get: {:} and we got: {:}".format( \
                 str(index[datetime.datetime(2012, 11, 24, 4, 4, 39, 141000)]),
-                                                     str(offset)))
+                                                     str(offset))))
 
     print(" Rewinding the file...")
     t.rewind()

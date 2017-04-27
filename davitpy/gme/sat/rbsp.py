@@ -656,7 +656,7 @@ if __name__ == '__main__':
         print("00:00 and 12:00 utc:")
         print("    07:45 UT, B: ( 57.82 N, 314.19 E)      (-72.89 N, 351.06 E)")
         print("    08:45 UT, A: ( 56.43 N, 307.07 E)      (-74.73 N, 337.82 E)")
-        input("Enter to continue on to another example")
+        eval(input("Enter to continue on to another example"))
 
         print("")
         print("Forcing a re-read from the JHU/APL website")

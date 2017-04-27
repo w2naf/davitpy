@@ -439,7 +439,7 @@ class radDataPtr():
                         break
 
                     # Now fetch the files
-                    print(self.sTime,self.eTime)
+                    print((self.sTime,self.eTime))
                     temp = futils.fetch_remote_files(self.sTime, self.eTime,
                                                      'sftp', remote_site,
                                                      remote_dirfmt, remote_dict,
@@ -535,7 +535,7 @@ class radDataPtr():
 
     def __repr__(self):
         myStr = 'radDataPtr: \n'
-        for key,var in self.__dict__.items():
+        for key,var in list(self.__dict__.items()):
             if(isinstance(var, radBaseData) or isinstance(var, radDataPtr) or
                isinstance(var, type({}))):
                 myStr += '%s = %s \n' % (key,'object')
@@ -945,7 +945,7 @@ class radBaseData():
 
         written by AJ, 20130402
         """
-        for key, val in obj.__dict__.items():
+        for key, val in list(obj.__dict__.items()):
             if isinstance(val, radBaseData):
                 try:
                     getattr(self, key).copyData(val)
@@ -989,7 +989,7 @@ class radBaseData():
         #      else: self.channel = 'a'
         #      continue
 
-        for attr, value in self.__dict__.items():
+        for attr, value in list(self.__dict__.items()):
             #check for special params
             if attr == 'time':
                 #convert from epoch to datetime
@@ -1182,7 +1182,7 @@ class beamData(radBaseData):
     def __repr__(self):
         import datetime as dt
         myStr = 'Beam record FROM: ' + str(self.time) + '\n'
-        for key,var in self.__dict__.items():
+        for key,var in list(self.__dict__.items()):
             if(isinstance(var, radBaseData) or isinstance(var, radDataPtr) or
                isinstance(var, type({}))):
                 myStr += '%s  = %s \n' % (key, 'object')
@@ -1284,7 +1284,7 @@ class prmData(radBaseData):
     def __repr__(self):
         import datetime as dt
         myStr = 'Prm data: \n'
-        for key,var in self.__dict__.items():
+        for key,var in list(self.__dict__.items()):
             myStr += '%s  = %s \n' % (key, var)
         return myStr
 
@@ -1369,7 +1369,7 @@ class fitData(radBaseData):
     def __repr__(self):
         import datetime as dt
         myStr = 'Fit data: \n'
-        for key,var in self.__dict__.items():
+        for key,var in list(self.__dict__.items()):
             myStr += '%s = %s \n' % (key, var)
         return myStr
 
@@ -1407,7 +1407,7 @@ class rawData(radBaseData):
     def __repr__(self):
         import datetime as dt
         myStr = 'Raw data: \n'
-        for key,var in self.__dict__.items():
+        for key,var in list(self.__dict__.items()):
             myStr += '%s = %s \n' % (key, var)
         return myStr
 
@@ -1482,7 +1482,7 @@ class iqData(radBaseData):
     def __repr__(self):
         import datetime as dt
         myStr = 'IQ data: \n'
-        for key,var in self.__dict__.items():
+        for key,var in list(self.__dict__.items()):
             myStr += '%s = %s \n' % (key, var)
         return myStr
 
@@ -1507,20 +1507,20 @@ if __name__=="__main__":
     expected_path = os.path.join(tmpdir, expected_filename)
     expected_filesize = 19377805
     expected_md5sum = "cfd48945be0fd5bf82119da9a4a66994"
-    print("Expected File: " + expected_path)
+    print(("Expected File: " + expected_path))
 
     print("\nRunning sftp grab example for radDataPtr.")
     print("Environment variables used:")
-    print("  DB: " + davitpy.rcParams['DB'])
-    print("  DB_PORT: " + davitpy.rcParams['DB_PORT'])
-    print("  DBREADUSER: " + davitpy.rcParams['DBREADUSER'])
-    print("  DBREADPASS: " + davitpy.rcParams['DBREADPASS'])
-    print("  DAVIT_REMOTE_DIRFORMAT: {}".format( \
-                                    davitpy.rcParams['DAVIT_REMOTE_DIRFORMAT']))
-    print("  DAVIT_REMOTE_FNAMEFMT: {}".format( \
-                                    davitpy.rcParams['DAVIT_REMOTE_FNAMEFMT']))
-    print("  DAVIT_REMOTE_TIMEINC: " + davitpy.rcParams['DAVIT_REMOTE_TIMEINC'])
-    print("  DAVIT_TMPDIR: " + davitpy.rcParams['DAVIT_TMPDIR'])
+    print(("  DB: " + davitpy.rcParams['DB']))
+    print(("  DB_PORT: " + davitpy.rcParams['DB_PORT']))
+    print(("  DBREADUSER: " + davitpy.rcParams['DBREADUSER']))
+    print(("  DBREADPASS: " + davitpy.rcParams['DBREADPASS']))
+    print(("  DAVIT_REMOTE_DIRFORMAT: {}".format( \
+                                    davitpy.rcParams['DAVIT_REMOTE_DIRFORMAT'])))
+    print(("  DAVIT_REMOTE_FNAMEFMT: {}".format( \
+                                    davitpy.rcParams['DAVIT_REMOTE_FNAMEFMT'])))
+    print(("  DAVIT_REMOTE_TIMEINC: " + davitpy.rcParams['DAVIT_REMOTE_TIMEINC']))
+    print(("  DAVIT_TMPDIR: " + davitpy.rcParams['DAVIT_TMPDIR']))
     src = 'sftp'
     if os.path.isfile(expected_path):
         os.remove(expected_path)
@@ -1529,11 +1529,11 @@ if __name__=="__main__":
                        noCache=True)
     if os.path.isfile(expected_path):
         statinfo = os.stat(expected_path)
-        print("Actual File Size:  ", statinfo.st_size)
-        print("Expected File Size:", expected_filesize) 
+        print(("Actual File Size:  ", statinfo.st_size))
+        print(("Expected File Size:", expected_filesize)) 
         md5sum=hashlib.md5(open(expected_path).read()).hexdigest()
-        print("Actual Md5sum:  ", md5sum)
-        print("Expected Md5sum:", expected_md5sum)
+        print(("Actual Md5sum:  ", md5sum))
+        print(("Expected Md5sum:", expected_md5sum))
         if expected_md5sum != md5sum:
             print("Error: Cached dmap file has unexpected md5sum.")
     else:
@@ -1542,22 +1542,22 @@ if __name__=="__main__":
     try:
         ptr = VTptr
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         print("Close pointer")
         ptr.close()
         print("reopen pointer")
         ptr.open()
         print("Should now be back at beginning:")
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         print("What is the current offset:")
-        print(ptr.offsetTell())
+        print((ptr.offsetTell()))
         print("Try to seek to offset 4, shouldn't work:")
-        print(ptr.offsetSeek(4))
+        print((ptr.offsetSeek(4)))
         print("What is the current offset:")
-        print(ptr.offsetTell())
+        print((ptr.offsetTell()))
     except:
         print("record read failed for some reason")
 
@@ -1566,10 +1566,10 @@ if __name__=="__main__":
 
     print("\nRunning local grab example for radDataPtr.")
     print("Environment variables used:")
-    print("  DAVIT_LOCAL_DIRFORMAT:", davitpy.rcParams['DAVIT_LOCAL_DIRFORMAT'])
-    print("  DAVIT_LOCAL_FNAMEFMT:", davitpy.rcParams['DAVIT_LOCAL_FNAMEFMT'])
-    print("  DAVIT_LOCAL_TIMEINC:", davitpy.rcParams['DAVIT_LOCAL_TIMEINC'])
-    print("  DAVIT_TMPDIR:", davitpy.rcParams['DAVIT_TMPDIR'])
+    print(("  DAVIT_LOCAL_DIRFORMAT:", davitpy.rcParams['DAVIT_LOCAL_DIRFORMAT']))
+    print(("  DAVIT_LOCAL_FNAMEFMT:", davitpy.rcParams['DAVIT_LOCAL_FNAMEFMT']))
+    print(("  DAVIT_LOCAL_TIMEINC:", davitpy.rcParams['DAVIT_LOCAL_TIMEINC']))
+    print(("  DAVIT_TMPDIR:", davitpy.rcParams['DAVIT_TMPDIR']))
 
     src='local'
     if os.path.isfile(expected_path):
@@ -1579,11 +1579,11 @@ if __name__=="__main__":
                           src=src, noCache=True)
     if os.path.isfile(expected_path):
         statinfo = os.stat(expected_path)
-        print("Actual File Size:  ", statinfo.st_size)
-        print("Expected File Size:", expected_filesize) 
+        print(("Actual File Size:  ", statinfo.st_size))
+        print(("Expected File Size:", expected_filesize)) 
         md5sum = hashlib.md5(open(expected_path).read()).hexdigest()
-        print("Actual Md5sum:  ",md5sum)
-        print("Expected Md5sum:",expected_md5sum)
+        print(("Actual Md5sum:  ",md5sum))
+        print(("Expected Md5sum:",expected_md5sum))
         if expected_md5sum != md5sum:
             print("Error: Cached dmap file has unexpected md5sum.")
     else:
@@ -1592,16 +1592,16 @@ if __name__=="__main__":
     try:
         ptr = localptr
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         print("Close pointer")
         ptr.close()
         print("reopen pointer")
         ptr.open()
         print("Should now be back at beginning:")
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
     except:
         print("record read failed for some reason")
     ptr.close()
@@ -1620,19 +1620,19 @@ if __name__=="__main__":
     expected_path = os.path.join(tmpdir, expected_filename)
     expected_filesize = 16148989
     expected_md5sum = "ae7b4a7c8fea56af9639c39bea1453f2"
-    print("Expected File:", expected_path)
+    print(("Expected File:", expected_path))
 
     print("\nRunning sftp grab example for radDataPtr.")
     print("Environment variables used:")
-    print("  DB:", davitpy.rcParams['DB'])
-    print("  DB_PORT:",davitpy.rcParams['DB_PORT'])
-    print("  DBREADUSER:", davitpy.rcParams['DBREADUSER'])
-    print("  DBREADPASS:", davitpy.rcParams['DBREADPASS'])
-    print("  DAVIT_REMOTE_DIRFORMAT: {}".format( \
-                                    davitpy.rcParams['DAVIT_REMOTE_DIRFORMAT']))
-    print("  DAVIT_REMOTE_FNAMEFMT:", davitpy.rcParams['DAVIT_REMOTE_FNAMEFMT'])
-    print("  DAVIT_REMOTE_TIMEINC:", davitpy.rcParams['DAVIT_REMOTE_TIMEINC'])
-    print("  DAVIT_TMPDIR:", davitpy.rcParams['DAVIT_TMPDIR'])
+    print(("  DB:", davitpy.rcParams['DB']))
+    print(("  DB_PORT:",davitpy.rcParams['DB_PORT']))
+    print(("  DBREADUSER:", davitpy.rcParams['DBREADUSER']))
+    print(("  DBREADPASS:", davitpy.rcParams['DBREADPASS']))
+    print(("  DAVIT_REMOTE_DIRFORMAT: {}".format( \
+                                    davitpy.rcParams['DAVIT_REMOTE_DIRFORMAT'])))
+    print(("  DAVIT_REMOTE_FNAMEFMT:", davitpy.rcParams['DAVIT_REMOTE_FNAMEFMT']))
+    print(("  DAVIT_REMOTE_TIMEINC:", davitpy.rcParams['DAVIT_REMOTE_TIMEINC']))
+    print(("  DAVIT_TMPDIR:", davitpy.rcParams['DAVIT_TMPDIR']))
     src = 'sftp'
     if os.path.isfile(expected_path):
         os.remove(expected_path)
@@ -1641,11 +1641,11 @@ if __name__=="__main__":
                        noCache=True)
     if os.path.isfile(expected_path):
         statinfo = os.stat(expected_path)
-        print("Actual File Size:  ", statinfo.st_size)
-        print("Expected File Size:", expected_filesize) 
+        print(("Actual File Size:  ", statinfo.st_size))
+        print(("Expected File Size:", expected_filesize)) 
         md5sum = hashlib.md5(open(expected_path).read()).hexdigest()
-        print("Actual Md5sum:  ", md5sum)
-        print("Expected Md5sum:", expected_md5sum)
+        print(("Actual Md5sum:  ", md5sum))
+        print(("Expected Md5sum:", expected_md5sum))
         if expected_md5sum != md5sum:
             print("Error: Cached dmap file has unexpected md5sum.")
     else:
@@ -1654,22 +1654,22 @@ if __name__=="__main__":
     try:
         ptr = VTptr
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         print("Close pointer")
         ptr.close()
         print("reopen pointer")
         ptr.open()
         print("Should now be back at beginning:")
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         print("What is the current offset:")
-        print(ptr.offsetTell())
+        print((ptr.offsetTell()))
         print("Try to seek to offset 4, shouldn't work:")
-        print(ptr.offsetSeek(4))
+        print((ptr.offsetSeek(4)))
         print("What is the current offset:")
-        print(ptr.offsetTell())
+        print((ptr.offsetTell()))
     except:
         print("record read failed for some reason")
 
@@ -1687,19 +1687,19 @@ if __name__=="__main__":
     expected_path = os.path.join(tmpdir, expected_filename)
     expected_filesize = 31822045
     expected_md5sum = "493bd0c937b6135cc608d0518d929077"
-    print("Expected File:", expected_path)
+    print(("Expected File:", expected_path))
 
     print("\nRunning sftp grab example for radDataPtr.")
     print("Environment variables used:")
-    print("  DB:", davitpy.rcParams['DB'])
-    print("  DB_PORT:", davitpy.rcParams['DB_PORT'])
-    print("  DBREADUSER:", davitpy.rcParams['DBREADUSER'])
-    print("  DBREADPASS:", davitpy.rcParams['DBREADPASS'])
-    print("  DAVIT_REMOTE_DIRFORMAT: {}".format( \
-                                    davitpy.rcParams['DAVIT_REMOTE_DIRFORMAT']))
-    print("  DAVIT_REMOTE_FNAMEFMT:", davitpy.rcParams['DAVIT_REMOTE_FNAMEFMT'])
-    print("  DAVIT_REMOTE_TIMEINC:", davitpy.rcParams['DAVIT_REMOTE_TIMEINC'])
-    print("  DAVIT_TMPDIR:", davitpy.rcParams['DAVIT_TMPDIR'])
+    print(("  DB:", davitpy.rcParams['DB']))
+    print(("  DB_PORT:", davitpy.rcParams['DB_PORT']))
+    print(("  DBREADUSER:", davitpy.rcParams['DBREADUSER']))
+    print(("  DBREADPASS:", davitpy.rcParams['DBREADPASS']))
+    print(("  DAVIT_REMOTE_DIRFORMAT: {}".format( \
+                                    davitpy.rcParams['DAVIT_REMOTE_DIRFORMAT'])))
+    print(("  DAVIT_REMOTE_FNAMEFMT:", davitpy.rcParams['DAVIT_REMOTE_FNAMEFMT']))
+    print(("  DAVIT_REMOTE_TIMEINC:", davitpy.rcParams['DAVIT_REMOTE_TIMEINC']))
+    print(("  DAVIT_TMPDIR:", davitpy.rcParams['DAVIT_TMPDIR']))
     src = 'sftp'
     if os.path.isfile(expected_path):
         os.remove(expected_path)
@@ -1708,11 +1708,11 @@ if __name__=="__main__":
                        noCache=True)
     if os.path.isfile(expected_path):
         statinfo = os.stat(expected_path)
-        print("Actual File Size:  ", statinfo.st_size)
-        print("Expected File Size:", expected_filesize) 
+        print(("Actual File Size:  ", statinfo.st_size))
+        print(("Expected File Size:", expected_filesize)) 
         md5sum=hashlib.md5(open(expected_path).read()).hexdigest()
-        print("Actual Md5sum:  ", md5sum)
-        print("Expected Md5sum:", expected_md5sum)
+        print(("Actual Md5sum:  ", md5sum))
+        print(("Expected Md5sum:", expected_md5sum))
         if expected_md5sum != md5sum:
             print("Error: Cached dmap file has unexpected md5sum.")
     else:
@@ -1721,22 +1721,22 @@ if __name__=="__main__":
     try:
         ptr = VTptr
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         print("Close pointer")
         ptr.close()
         print("reopen pointer")
         ptr.open()
         print("Should now be back at beginning:")
         beam = ptr.readRec()
-        print(beam.time)
+        print((beam.time))
         print("What is the current offset:")
-        print(ptr.offsetTell())
+        print((ptr.offsetTell()))
         print("Try to seek to offset 4, shouldn't work:")
-        print(ptr.offsetSeek(4))
+        print((ptr.offsetSeek(4)))
         print("What is the current offset:")
-        print(ptr.offsetTell())
+        print((ptr.offsetTell()))
     except:
         print("record read failed for some reason")
 

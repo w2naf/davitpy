@@ -202,8 +202,8 @@ def test_calc_tdiff(file_type="fitacf", password=True, tdiff_plot=None):
                                                fileType=file_type,
                                                password=password, cp=radcp)
     except:
-        print("Unable to load tdiff test data:\nRadar: {:s}".format(rad))
-        print("Program: {:d}\nTime: {:} to {:}".format(radcp, stime, etime))
+        print(("Unable to load tdiff test data:\nRadar: {:s}".format(rad)))
+        print(("Program: {:d}\nTime: {:} to {:}".format(radcp, stime, etime)))
         return None, None, None
 
     hard = pyrad.site(code=rad, dt=stime)

@@ -469,7 +469,7 @@ class musicDataObj(object):
         keys = list(self.metadata.keys())
         keys.sort()
         for key in keys:
-            print(key+':',self.metadata[key])
+            print((key+':',self.metadata[key]))
 
     def appendHistory(self,comment):
         """Add an entry to the processing history dictionary of the current musicDataObj object.
@@ -491,7 +491,7 @@ class musicDataObj(object):
         keys = list(self.history.keys())
         keys.sort()
         for key in keys:
-            print(key,self.history[key])
+            print((key,self.history[key]))
 
 
     
@@ -2109,10 +2109,10 @@ def detectSignals(dataObj,dataSet='active',threshold=0.35,neighborhood=(10,10)):
     markers,nb  = ndimage.label(local_maxi)
     labels      = watershed(-distance,markers,mask=mask)
 
-    areas         = ndimage.sum(mask,labels,range(1,labels.max()+1))
-    maxima        = ndimage.maximum(data,labels,range(1, labels.max()+1))
+    areas         = ndimage.sum(mask,labels,list(range(1,labels.max()+1)))
+    maxima        = ndimage.maximum(data,labels,list(range(1, labels.max()+1)))
     order         = np.argsort(maxima)[::-1] + 1
-    maxpos        = ndimage.maximum_position(data,labels,range(1, labels.max()+1))
+    maxpos        = ndimage.maximum_position(data,labels,list(range(1, labels.max()+1)))
 
     sigDetect = SigDetect()
     sigDetect.mask    = mask

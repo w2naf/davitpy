@@ -200,7 +200,7 @@ class poesRec(gmeData):
     self.time = dt.datetime(int(cols[0]), int(cols[1]), int(cols[2]), int(cols[3]),int(cols[4]), \
                             int(float(cols[5])),int(round((float(cols[5])-int(float(cols[5])))*1e6)))
     
-    for key in self.__dict__.keys():
+    for key in list(self.__dict__.keys()):
       if(key == 'dataSet' or key == 'info' or key == 'satnum' or key == 'time'): continue
       try: ind = head.index(key)
       except Exception as e:
@@ -527,7 +527,7 @@ def mapPoesMongo(sYear,eYear=None):
     for rec in templist:
       # check if a duplicate record exists
       qry = mongoData.find({'$and':[{'time':rec.time},{'satnum':rec.satnum}]})
-      print(rec.time, rec.satnum)
+      print((rec.time, rec.satnum))
       tempRec = rec.toDbDict()
       cnt = qry.count()
       # if this is a new record, insert it
